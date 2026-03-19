@@ -68,7 +68,7 @@ export const StickyNav = () => {
           />
           <span
             className="text-[#3d2414] text-[2.4rem] font-bold tracking-wide hidden sm:block"
-            style={{ fontFamily: "'Amiri', Helvetica" }}
+            style={{ fontFamily: "'Dancing Script', cursive" }}
           >
             Sai Life Coaching
           </span>
