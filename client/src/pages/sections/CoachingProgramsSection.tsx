@@ -1,5 +1,8 @@
+import { User, Users } from "lucide-react";
+
 const programs = [
   {
+    icon: User,
     label: "One-on-One",
     title: "Individual Coaching",
     description:
@@ -7,6 +10,7 @@ const programs = [
     cta: "Book a Session",
   },
   {
+    icon: Users,
     label: "Community",
     title: "Group Workshops",
     description:
@@ -35,37 +39,43 @@ export const CoachingProgramsSection = (): JSX.Element => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {programs.map((program, i) => (
-            <div
-              key={i}
-              className="border border-white/20 p-10 flex flex-col gap-6 hover:border-[#c8953d]/70 transition-colors duration-300 group"
-            >
-              <p
-                className="text-[#c8953d] text-xs tracking-[0.4em] uppercase font-bold"
-                style={{ fontFamily: "'Raleway', sans-serif" }}
+          {programs.map((program, i) => {
+            const Icon = program.icon;
+            return (
+              <div
+                key={i}
+                className="border border-white/20 p-10 flex flex-col gap-6 hover:border-[#c8953d]/70 transition-colors duration-300 group"
               >
-                {program.label}
-              </p>
-              <h3
-                className="text-white text-2xl font-bold tracking-wide"
-                style={{ fontFamily: "'Raleway', sans-serif" }}
-              >
-                {program.title}
-              </h3>
-              <p
-                className="text-white/65 text-sm leading-relaxed flex-1"
-                style={{ fontFamily: "'Open Sans', sans-serif" }}
-              >
-                {program.description}
-              </p>
-              <button
-                className="self-start px-8 py-3 border border-[#c8953d] text-[#c8953d] text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#c8953d] hover:text-white transition-colors duration-200"
-                style={{ fontFamily: "'Raleway', sans-serif" }}
-              >
-                {program.cta}
-              </button>
-            </div>
-          ))}
+                <div className="w-14 h-14 rounded-sm bg-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#c8953d] transition-colors duration-300">
+                  <Icon className="text-[#c8953d] group-hover:text-white transition-colors duration-300" size={26} />
+                </div>
+                <p
+                  className="text-[#c8953d] text-xs tracking-[0.4em] uppercase font-bold"
+                  style={{ fontFamily: "'Raleway', sans-serif" }}
+                >
+                  {program.label}
+                </p>
+                <h3
+                  className="text-white text-2xl font-bold tracking-wide"
+                  style={{ fontFamily: "'Raleway', sans-serif" }}
+                >
+                  {program.title}
+                </h3>
+                <p
+                  className="text-white/65 text-sm leading-relaxed flex-1"
+                  style={{ fontFamily: "'Open Sans', sans-serif" }}
+                >
+                  {program.description}
+                </p>
+                <button
+                  className="self-start px-8 py-3 border border-[#c8953d] text-[#c8953d] text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#c8953d] hover:text-white transition-colors duration-200"
+                  style={{ fontFamily: "'Raleway', sans-serif" }}
+                >
+                  {program.cta}
+                </button>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>

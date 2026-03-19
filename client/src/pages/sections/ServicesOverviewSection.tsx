@@ -1,33 +1,48 @@
+import {
+  ShieldCheck,
+  Compass,
+  Lightbulb,
+  Trophy,
+  Users,
+  Sparkles,
+} from "lucide-react";
+
 const services = [
   {
+    icon: ShieldCheck,
     title: "Stress & Resilience",
     description:
-      "Feeling overwhelmed? Learn proven techniques to manage stress and build lasting emotional resilience.",
+      "Learn proven techniques to manage stress and build lasting emotional resilience.",
   },
   {
+    icon: Compass,
     title: "Clarity & Direction",
     description:
-      "Uncertain about your future? Clarify your goals and create a concrete roadmap for success.",
+      "Clarify your goals and create a concrete roadmap for success.",
   },
   {
+    icon: Lightbulb,
     title: "Motivation & Vision",
     description:
-      "Lacking motivation? Reignite your drive with creative visualization and powerful goal-setting strategies.",
+      "Reignite your drive with creative visualization and powerful goal-setting strategies.",
   },
   {
+    icon: Trophy,
     title: "Self-Confidence",
     description:
-      "Struggling with self-doubt? Boost your self-esteem and step into your true potential.",
+      "Boost your self-esteem and step fully into your true potential.",
   },
   {
+    icon: Users,
     title: "Community & Connection",
     description:
-      "Want to meet like-minded people? Join a supportive community that shares your aspirations.",
+      "Join a supportive community of like-minded people who share your aspirations.",
   },
   {
+    icon: Sparkles,
     title: "Self-Discovery",
     description:
-      "Need direction? Uncover your unique strengths and passions to guide every future decision.",
+      "Uncover your unique strengths and passions to guide every future decision.",
   },
 ];
 
@@ -51,26 +66,31 @@ export const ServicesOverviewSection = (): JSX.Element => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service, i) => (
-            <div
-              key={i}
-              className="bg-white border border-gray-200 p-8 group hover:shadow-lg hover:border-[#c8953d] transition-all duration-300"
-            >
-              <div className="w-8 h-0.5 bg-[#c8953d] mb-6 group-hover:w-14 transition-all duration-300" />
-              <h3
-                className="text-[#1b2a3b] text-lg font-bold mb-3 tracking-wide"
-                style={{ fontFamily: "'Raleway', sans-serif" }}
+          {services.map((service, i) => {
+            const Icon = service.icon;
+            return (
+              <div
+                key={i}
+                className="bg-white border border-gray-200 aspect-square flex flex-col items-center justify-center text-center p-8 gap-5 group hover:shadow-lg hover:border-[#c8953d] transition-all duration-300"
               >
-                {service.title}
-              </h3>
-              <p
-                className="text-[#666] text-sm leading-relaxed"
-                style={{ fontFamily: "'Open Sans', sans-serif" }}
-              >
-                {service.description}
-              </p>
-            </div>
-          ))}
+                <div className="w-16 h-16 rounded-sm bg-[#1b2a3b] flex items-center justify-center flex-shrink-0 group-hover:bg-[#c8953d] transition-colors duration-300">
+                  <Icon className="text-[#c8953d] group-hover:text-white transition-colors duration-300" size={30} />
+                </div>
+                <h3
+                  className="text-[#1b2a3b] text-lg font-bold tracking-wide"
+                  style={{ fontFamily: "'Raleway', sans-serif" }}
+                >
+                  {service.title}
+                </h3>
+                <p
+                  className="text-[#666] text-sm leading-relaxed"
+                  style={{ fontFamily: "'Open Sans', sans-serif" }}
+                >
+                  {service.description}
+                </p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
