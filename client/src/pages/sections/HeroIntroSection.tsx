@@ -17,14 +17,14 @@ export const HeroIntroSection = (): JSX.Element => {
       <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl mx-auto">
         <h1
           className="text-[#c8953d] text-[68px] md:text-[84px] font-bold leading-[1.1] tracking-tight mb-5"
-          style={{ fontFamily: "'Raleway', sans-serif" }}
+          style={{ fontFamily: "'Raleway', sans-serif", WebkitTextStroke: "1.5px black" }}
         >
           Discover Yourself
         </h1>
 
         <p
           className="text-white/90 text-[1.95rem] font-light tracking-wide mb-14"
-          style={{ fontFamily: "'Open Sans', sans-serif" }}
+          style={{ fontFamily: "'Open Sans', sans-serif", WebkitTextStroke: "1px black" }}
         >
           Unlock Your Full Potential
         </p>
