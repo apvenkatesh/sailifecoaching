@@ -38,17 +38,22 @@ export const CoachingProgramsSection = (): JSX.Element => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-8">
           {programs.map((program, i) => {
             const Icon = program.icon;
             return (
               <div
                 key={i}
-                className="border border-white/20 p-10 flex flex-col gap-6 hover:border-[#c8953d]/70 transition-colors duration-300 group"
+                className="relative mt-7 border border-white/20 px-10 pt-12 pb-10 flex flex-col gap-5 hover:border-[#c8953d]/70 transition-colors duration-300 group"
               >
-                <div className="w-14 h-14 rounded-sm bg-white/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#c8953d] transition-colors duration-300">
-                  <Icon className="text-[#c8953d] group-hover:text-white transition-colors duration-300" size={26} />
+                {/* Icon — half outside the card top */}
+                <div className="absolute -top-7 left-10 w-14 h-14 rounded-sm bg-white/10 flex items-center justify-center group-hover:bg-[#c8953d] transition-colors duration-300">
+                  <Icon
+                    className="text-[#c8953d] group-hover:text-white transition-colors duration-300"
+                    size={26}
+                  />
                 </div>
+
                 <p
                   className="text-[#c8953d] text-xs tracking-[0.4em] uppercase font-bold"
                   style={{ fontFamily: "'Raleway', sans-serif" }}
@@ -62,7 +67,7 @@ export const CoachingProgramsSection = (): JSX.Element => {
                   {program.title}
                 </h3>
                 <p
-                  className="text-white/65 text-sm leading-relaxed flex-1"
+                  className="text-white/65 text-sm leading-relaxed"
                   style={{ fontFamily: "'Open Sans', sans-serif" }}
                 >
                   {program.description}

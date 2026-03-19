@@ -65,19 +65,24 @@ export const ServicesOverviewSection = (): JSX.Element => {
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
           {services.map((service, i) => {
             const Icon = service.icon;
             return (
               <div
                 key={i}
-                className="bg-white border border-gray-200 aspect-square flex flex-col items-center justify-center text-center p-8 gap-5 group hover:shadow-lg hover:border-[#c8953d] transition-all duration-300"
+                className="relative mt-7 bg-white border border-gray-200 text-center px-8 pt-12 pb-8 group hover:shadow-lg hover:border-[#c8953d] transition-all duration-300"
               >
-                <div className="w-16 h-16 rounded-sm bg-[#1b2a3b] flex items-center justify-center flex-shrink-0 group-hover:bg-[#c8953d] transition-colors duration-300">
-                  <Icon className="text-[#c8953d] group-hover:text-white transition-colors duration-300" size={30} />
+                {/* Icon — half outside the card top */}
+                <div className="absolute -top-7 left-1/2 -translate-x-1/2 w-14 h-14 rounded-sm bg-[#1b2a3b] flex items-center justify-center group-hover:bg-[#c8953d] transition-colors duration-300">
+                  <Icon
+                    className="text-[#c8953d] group-hover:text-white transition-colors duration-300"
+                    size={28}
+                  />
                 </div>
+
                 <h3
-                  className="text-[#1b2a3b] text-lg font-bold tracking-wide"
+                  className="text-[#1b2a3b] text-lg font-bold mb-3 tracking-wide"
                   style={{ fontFamily: "'Raleway', sans-serif" }}
                 >
                   {service.title}
