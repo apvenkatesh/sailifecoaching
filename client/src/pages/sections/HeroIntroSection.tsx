@@ -8,11 +8,7 @@ export const HeroIntroSection = (): JSX.Element => {
 
   return (
     <section className="relative w-full min-h-screen flex items-center overflow-hidden">
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url(/figmaAssets/rectangle-24.png)" }}
-      />
-      <div className="absolute inset-0 bg-[#1b2a3b]/78" />
+      <div className="absolute inset-0 bg-[#1b2a3b]" />
 
       <div className="relative z-10 w-full max-w-[1200px] mx-auto px-8 py-24 flex flex-col md:flex-row items-center gap-16">
 
@@ -63,7 +59,7 @@ export const HeroIntroSection = (): JSX.Element => {
             {/* Outer gold ring */}
             <div className="w-[340px] h-[340px] md:w-[420px] md:h-[420px] rounded-full border-4 border-[#c8953d] p-1">
               <img
-                src="/figmaAssets/ellipse-1.png"
+                src="/figmaAssets/rectangle-24.png"
                 alt="Coach Shanmuga Priya"
                 className="w-full h-full rounded-full object-cover object-top"
               />
