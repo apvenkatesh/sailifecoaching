@@ -67,7 +67,7 @@ export const StickyNav = () => {
             className="h-[120px] w-auto object-contain"
           />
           <span
-            className="text-[#3d2414] text-[2.4rem] font-bold tracking-wide hidden sm:block"
+            className="text-[#3d2414] text-[3.12rem] font-bold tracking-wide hidden sm:block"
             style={{ fontFamily: "'Dancing Script', cursive" }}
           >
             Sai Life Coaching
