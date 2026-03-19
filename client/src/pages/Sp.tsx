@@ -7,14 +7,12 @@ import { ServicesOverviewSection } from "./sections/ServicesOverviewSection";
 
 export const Sp = (): JSX.Element => {
   return (
-    <div className="bg-white w-full min-w-[1512px] relative">
-      <div className="w-[177px] h-[147px] absolute top-3 left-[50px] z-10 [background:url(../figmaAssets/frame-1.png)_50%_50%_/_cover]" />
-
-      <Separator className="absolute top-[174px] left-0 w-full h-0.5 bg-[#000000]" />
+    <div className="bg-white w-full relative">
+      <div className="w-[177px] h-[147px] absolute top-3 left-[50px] z-20 [background:url(/figmaAssets/frame-1.png)_50%_50%_/_cover]" />
 
       <HeroIntroSection />
 
-      <section className="relative w-full bg-[#2d2d2d] py-20">
+      <section className="relative w-full bg-[#2d2d2d] py-20" id="about">
         <div className="absolute top-0 left-0 w-full h-0.5 bg-[#000000]" />
 
         <div className="container mx-auto px-[36px] max-w-[1512px]">
@@ -23,8 +21,8 @@ export const Sp = (): JSX.Element => {
               ABOUT ME + MY COACHING
             </h2>
 
-            <div className="flex items-start gap-12 w-full justify-between px-[139px]">
-              <div className="flex-1 max-w-[840px]">
+            <div className="flex items-start gap-12 w-full justify-between px-4 md:px-[139px]">
+              <div className="flex-1">
                 <p className="[font-family:'Gayathri',Helvetica] font-bold text-[#fff9e4] text-2xl tracking-[0] leading-[45px]">
                   I am Coach Shanmuga Priya (SP), a certified Life Coach through
                   Mindvalley, dedicated to guiding individuals on a journey
@@ -53,15 +51,11 @@ export const Sp = (): JSX.Element => {
         <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[#000000]" />
       </section>
 
-      <img
-        className="absolute top-[243px] left-[174px] w-[488px] h-[628px] border-[7px] border-solid border-[#fdf9f3] object-cover z-10"
-        alt="Coach Image"
-        src="/figmaAssets/rectangle-24.png"
-      />
-
       <Separator className="w-full h-[3px] bg-[#000000]" />
 
-      <ServicesOverviewSection />
+      <div id="services">
+        <ServicesOverviewSection />
+      </div>
 
       <Separator className="w-full h-[3px] bg-[#000000]" />
 
@@ -79,16 +73,24 @@ export const Sp = (): JSX.Element => {
         />
       </section>
 
-      <ContactInfoSection />
+      <div id="contact">
+        <ContactInfoSection />
+      </div>
 
-      <footer className="relative w-full py-12 px-[104px]">
-        <div className="flex flex-col gap-12">
+      <footer className="relative w-full py-12 px-[104px] bg-[#fdf9f3] border-t border-[#152734]">
+        <div className="flex flex-col gap-6">
           <div className="flex items-center gap-4">
             <img
               className="w-[30px] h-[30px]"
               alt="Phone"
               src="/figmaAssets/phone.png"
             />
+            <a
+              href="tel:9259229980"
+              className="[font-family:'Gayathri',Helvetica] font-bold text-[#152734] text-xl hover:text-[#152734]/70 transition-colors"
+            >
+              (925)-922-9980
+            </a>
           </div>
 
           <div className="flex items-center gap-4">
@@ -97,6 +99,12 @@ export const Sp = (): JSX.Element => {
               alt="Email"
               src="/figmaAssets/letter.png"
             />
+            <a
+              href="mailto:saishree99@gmail.com"
+              className="[font-family:'Gayathri',Helvetica] font-bold text-[#152734] text-xl hover:text-[#152734]/70 transition-colors"
+            >
+              saishree99@gmail.com
+            </a>
           </div>
 
           <div className="flex items-center gap-4">
@@ -105,6 +113,14 @@ export const Sp = (): JSX.Element => {
               alt="Instagram"
               src="/figmaAssets/instagram.png"
             />
+            <a
+              href="https://instagram.com/sp.lifecoach"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="[font-family:'Gayathri',Helvetica] font-bold text-[#152734] text-xl hover:text-[#152734]/70 transition-colors"
+            >
+              @sp.lifecoach
+            </a>
           </div>
         </div>
       </footer>
