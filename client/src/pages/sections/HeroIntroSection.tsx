@@ -7,20 +7,17 @@ export const HeroIntroSection = (): JSX.Element => {
   };
 
   return (
-    <section className="relative w-full overflow-hidden bg-[#f5f4f0]" style={{ minHeight: "600px" }}>
+    <section className="relative w-full overflow-hidden" style={{ minHeight: "600px" }}>
 
-      {/* Circle image — absolutely positioned right side, bleeds vertically */}
+      {/* Background image */}
       <div
-        className="absolute right-0 top-1/2 -translate-y-1/2 w-[520px] h-[520px] md:w-[620px] md:h-[620px] rounded-full overflow-hidden translate-x-[15%]"
-      >
-        <img
-          src="/figmaAssets/rectangle-24.png"
-          alt="Coach Shanmuga Priya"
-          className="w-full h-full object-cover object-top"
-        />
-      </div>
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url(/figmaAssets/hero-bg.png)" }}
+      />
+      {/* Subtle overlay to ensure text readability */}
+      <div className="absolute inset-0 bg-white/30" />
 
-      {/* Text — overlaps the image */}
+      {/* Text content */}
       <div className="relative z-10 w-full max-w-[1200px] mx-auto px-8 py-20 flex flex-col items-start text-left">
         <p
           className="text-[#c8953d] text-xs tracking-[0.4em] uppercase font-bold mb-6"
