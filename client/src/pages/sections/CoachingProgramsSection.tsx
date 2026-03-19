@@ -47,7 +47,7 @@ export const CoachingProgramsSection = (): JSX.Element => {
                 className="relative mt-7 border border-white/20 px-10 pt-12 pb-10 flex flex-col gap-5 hover:border-[#c8953d]/70 transition-colors duration-300 group"
               >
                 {/* Icon — half outside the card top */}
-                <div className="absolute -top-7 left-10 w-14 h-14 rounded-sm bg-white/10 flex items-center justify-center group-hover:bg-[#c8953d] transition-colors duration-300">
+                <div className="absolute -top-7 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-[#c8953d] transition-colors duration-300">
                   <Icon
                     className="text-[#c8953d] group-hover:text-white transition-colors duration-300"
                     size={26}

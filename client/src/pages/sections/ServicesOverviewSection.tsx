@@ -74,7 +74,7 @@ export const ServicesOverviewSection = (): JSX.Element => {
                 className="relative mt-7 bg-white border border-gray-200 text-center px-8 pt-12 pb-8 group hover:shadow-lg hover:border-[#c8953d] transition-all duration-300"
               >
                 {/* Icon — half outside the card top */}
-                <div className="absolute -top-7 left-1/2 -translate-x-1/2 w-14 h-14 rounded-sm bg-[#1b2a3b] flex items-center justify-center group-hover:bg-[#c8953d] transition-colors duration-300">
+                <div className="absolute -top-7 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-[#1b2a3b] flex items-center justify-center group-hover:bg-[#c8953d] transition-colors duration-300">
                   <Icon
                     className="text-[#c8953d] group-hover:text-white transition-colors duration-300"
                     size={28}
