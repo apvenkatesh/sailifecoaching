@@ -1,131 +1,159 @@
-import { Separator } from "@/components/ui/separator";
 import { StickyNav } from "@/components/StickyNav";
-import { ClientTestimonialsSection } from "./sections/ClientTestimonialsSection";
-import { CoachingProgramsSection } from "./sections/CoachingProgramsSection";
-import { ContactInfoSection } from "./sections/ContactInfoSection";
 import { HeroIntroSection } from "./sections/HeroIntroSection";
 import { ServicesOverviewSection } from "./sections/ServicesOverviewSection";
+import { CoachingProgramsSection } from "./sections/CoachingProgramsSection";
+import { ClientTestimonialsSection } from "./sections/ClientTestimonialsSection";
+import { ContactInfoSection } from "./sections/ContactInfoSection";
 
 export const Sp = (): JSX.Element => {
+  const handleScroll = (href: string) => {
+    const id = href.replace("#", "");
+    const el = document.getElementById(id);
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.scrollY - 72;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
+  };
+
   return (
-    <div className="bg-white w-full relative">
+    <div className="bg-white w-full">
       <StickyNav />
 
-      <div className="pt-[80px]">
+      <div className="pt-[72px]">
         <section id="home">
           <HeroIntroSection />
         </section>
 
-        <section id="welcome" className="relative w-full bg-[#2d2d2d] py-20">
-          <div className="absolute top-0 left-0 w-full h-0.5 bg-[#000000]" />
+        <section id="about" className="w-full bg-[#fdf9f3] py-24 px-6">
+          <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <div className="relative">
+              <div className="absolute -top-4 -left-4 w-full h-full border-2 border-[#bb9774] pointer-events-none" />
+              <img
+                src="/figmaAssets/ellipse-1.png"
+                alt="Coach Shanmuga Priya"
+                className="w-full max-w-[500px] object-cover relative z-10"
+              />
+            </div>
 
-          <div className="container mx-auto px-[36px] max-w-[1512px]">
-            <div className="flex flex-col items-center gap-12">
-              <h2 className="[font-family:'Amiri',Helvetica] font-normal text-[#fff9e4] text-[55px] text-center tracking-[2.75px] leading-normal">
-                ABOUT ME + MY COACHING
+            <div className="flex flex-col gap-6">
+              <p
+                className="text-[#bb9774] text-sm tracking-[0.3em] uppercase font-bold"
+                style={{ fontFamily: "'Gayathri', Helvetica" }}
+              >
+                About Me
+              </p>
+              <h2
+                className="text-[#1c2b1c] text-[42px] leading-tight tracking-wide"
+                style={{ fontFamily: "'Amiri', Helvetica" }}
+              >
+                About Me + My Coaching
               </h2>
-
-              <div className="flex items-start gap-12 w-full justify-between px-4 md:px-[139px]">
-                <div className="flex-1">
-                  <p className="[font-family:'Gayathri',Helvetica] font-bold text-[#fff9e4] text-2xl tracking-[0] leading-[45px]">
-                    I am Coach Shanmuga Priya (SP), a certified Life Coach through
-                    Mindvalley, dedicated to guiding individuals on a journey
-                    toward life satisfaction through the principles of gratitude,
-                    empathy, and forgiveness. I work with a range of clients, from
-                    teens to adults, helping them to enhance their quality of
-                    life. My coaching approach is focused on self-development,
-                    offering tools and strategies to gain insight, re-frame
-                    perspectives, practice self-forgiveness, manage relationships,
-                    boost creativity, improve work performance, and effectively
-                    manage stress.
-                  </p>
-                </div>
-
-                <div className="flex-shrink-0">
-                  <img
-                    className="w-[350px] h-[350px] object-cover rounded-full"
-                    alt="Coach Profile"
-                    src="/figmaAssets/ellipse-1.png"
-                  />
-                </div>
-              </div>
+              <div
+                className="w-12 h-0.5 bg-[#bb9774]"
+              />
+              <p
+                className="text-[#555] text-base leading-relaxed"
+                style={{ fontFamily: "'Gayathri', Helvetica" }}
+              >
+                I am Coach Shanmuga Priya (SP), a certified Life Coach through
+                Mindvalley, dedicated to guiding individuals on a journey toward
+                life satisfaction through the principles of gratitude, empathy,
+                and forgiveness.
+              </p>
+              <p
+                className="text-[#555] text-base leading-relaxed"
+                style={{ fontFamily: "'Gayathri', Helvetica" }}
+              >
+                I work with a range of clients, from teens to adults, helping
+                them to enhance their quality of life. My coaching approach is
+                focused on self-development, offering tools and strategies to
+                gain insight, re-frame perspectives, practice self-forgiveness,
+                manage relationships, boost creativity, improve work
+                performance, and effectively manage stress.
+              </p>
+              <button
+                onClick={() => handleScroll("#contact")}
+                className="self-start mt-4 px-10 py-4 bg-[#1c2b1c] text-white text-sm font-bold tracking-[0.2em] uppercase hover:bg-[#bb9774] transition-colors duration-200"
+                style={{ fontFamily: "'Gayathri', Helvetica" }}
+              >
+                Work With Me
+              </button>
             </div>
           </div>
-
-          <div className="absolute bottom-0 left-0 w-full h-0.5 bg-[#000000]" />
         </section>
 
-        <Separator className="w-full h-[3px] bg-[#000000]" />
-
-        <section id="about">
+        <section id="services">
           <ServicesOverviewSection />
         </section>
 
-        <Separator className="w-full h-[3px] bg-[#000000]" />
+        <div className="w-full bg-[#bb9774] py-16 px-6">
+          <div className="max-w-[900px] mx-auto text-center flex flex-col items-center gap-6">
+            <h2
+              className="text-white text-[40px] leading-tight tracking-wide"
+              style={{ fontFamily: "'Amiri', Helvetica" }}
+            >
+              Ready to Transform Your Life?
+            </h2>
+            <p
+              className="text-white/85 text-base leading-relaxed max-w-xl"
+              style={{ fontFamily: "'Gayathri', Helvetica" }}
+            >
+              Let me handle every detail of your journey, from first
+              conversation to lasting change.
+            </p>
+            <button
+              onClick={() => handleScroll("#contact")}
+              className="px-10 py-4 bg-white text-[#1c2b1c] text-sm font-bold tracking-[0.2em] uppercase hover:bg-[#fdf9f3] transition-colors duration-200"
+              style={{ fontFamily: "'Gayathri', Helvetica" }}
+            >
+              Get Started Today
+            </button>
+          </div>
+        </div>
 
-        <section id="services">
+        <section id="programs">
           <CoachingProgramsSection />
         </section>
 
-        <ClientTestimonialsSection />
+        <section id="testimonials">
+          <ClientTestimonialsSection />
+        </section>
 
-        <Separator className="w-full h-0.5 bg-[#000000]" />
-
-        <div className="relative w-full">
+        <div className="relative w-full h-[320px] overflow-hidden">
           <img
-            className="w-full h-[422px] object-cover"
-            alt="Gallery Pictures"
             src="/figmaAssets/pictures.png"
+            alt="Gallery"
+            className="w-full h-full object-cover"
           />
+          <div className="absolute inset-0 bg-[#1c2b1c]/40" />
         </div>
 
         <section id="contact">
           <ContactInfoSection />
         </section>
 
-        <footer className="relative w-full py-12 px-[104px] bg-[#fdf9f3] border-t border-[#152734]">
-          <div className="flex flex-col gap-6">
-            <div className="flex items-center gap-4">
-              <img
-                className="w-[30px] h-[30px]"
-                alt="Phone"
-                src="/figmaAssets/phone.png"
-              />
-              <a
-                href="tel:9259229980"
-                className="[font-family:'Gayathri',Helvetica] font-bold text-[#152734] text-xl hover:text-[#152734]/70 transition-colors"
-              >
-                (925)-922-9980
+        <footer className="w-full bg-[#111d11] py-10 px-8">
+          <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <img
+              src="/figmaAssets/frame-1.png"
+              alt="Sai Life Coaching"
+              className="h-[48px] w-auto object-contain brightness-0 invert opacity-80"
+            />
+            <p
+              className="text-white/40 text-sm text-center"
+              style={{ fontFamily: "'Gayathri', Helvetica" }}
+            >
+              © {new Date().getFullYear()} Sai Life Coaching · Coach Shanmuga Priya Puliyadi · MindValley Certified
+            </p>
+            <div className="flex gap-6">
+              <a href="tel:9259229980" className="text-white/40 hover:text-[#bb9774] transition-colors">
+                <img src="/figmaAssets/phone.png" alt="Phone" className="w-5 h-5 brightness-0 invert opacity-60 hover:opacity-100" />
               </a>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <img
-                className="w-[30px] h-[30px]"
-                alt="Email"
-                src="/figmaAssets/letter.png"
-              />
-              <a
-                href="mailto:saishree99@gmail.com"
-                className="[font-family:'Gayathri',Helvetica] font-bold text-[#152734] text-xl hover:text-[#152734]/70 transition-colors"
-              >
-                saishree99@gmail.com
+              <a href="mailto:saishree99@gmail.com" className="text-white/40 hover:text-[#bb9774] transition-colors">
+                <img src="/figmaAssets/letter.png" alt="Email" className="w-5 h-5 brightness-0 invert opacity-60 hover:opacity-100" />
               </a>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <img
-                className="w-[30px] h-[30px]"
-                alt="Instagram"
-                src="/figmaAssets/instagram.png"
-              />
-              <a
-                href="https://instagram.com/sp.lifecoach"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="[font-family:'Gayathri',Helvetica] font-bold text-[#152734] text-xl hover:text-[#152734]/70 transition-colors"
-              >
-                @sp.lifecoach
+              <a href="https://instagram.com/sp.lifecoach" target="_blank" rel="noopener noreferrer">
+                <img src="/figmaAssets/instagram.png" alt="Instagram" className="w-5 h-5 brightness-0 invert opacity-60 hover:opacity-100" />
               </a>
             </div>
           </div>

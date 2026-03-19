@@ -1,56 +1,63 @@
-import { ChevronDownIcon } from "lucide-react";
-
-const navigationItems = [
-  { label: "Home", href: "#home" },
-  { label: "Welcome", href: "#welcome" },
-  { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Contact", href: "#contact" },
-];
-
 export const HeroIntroSection = (): JSX.Element => {
+  const handleScroll = (href: string) => {
+    const id = href.replace("#", "");
+    const el = document.getElementById(id);
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.scrollY - 72;
+      window.scrollTo({ top, behavior: "smooth" });
+    }
+  };
+
   return (
-    <section className="relative w-full" id="home">
-      <nav className="w-full h-[173px] bg-[#fdf9f3] flex items-center justify-end px-12 gap-10">
-        {navigationItems.map((item, index) => (
-          <a
-            key={index}
-            href={item.href}
-            className="[font-family:'Gayathri',Helvetica] font-bold text-[#2f422e] text-xl tracking-[0.40px] hover:text-[#2f422e]/70 transition-colors"
+    <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden">
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: "url(/figmaAssets/rectangle-24.png)" }}
+      />
+      <div className="absolute inset-0 bg-[#1c2b1c]/75" />
+
+      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl mx-auto">
+        <p
+          className="text-[#bb9774] text-sm tracking-[0.3em] uppercase mb-6 font-bold"
+          style={{ fontFamily: "'Gayathri', Helvetica" }}
+        >
+          Certified Life Coach · MindValley
+        </p>
+
+        <h1
+          className="text-white text-[64px] md:text-[80px] leading-[1.1] tracking-[0.05em] mb-6"
+          style={{ fontFamily: "'Amiri', Helvetica" }}
+        >
+          Discover Yourself
+        </h1>
+
+        <p
+          className="text-white/80 text-2xl tracking-wide mb-12"
+          style={{ fontFamily: "'Amiri', Helvetica" }}
+        >
+          Unlock Your Full Potential
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-4">
+          <button
+            onClick={() => handleScroll("#contact")}
+            className="px-10 py-4 bg-[#bb9774] text-white text-sm font-bold tracking-[0.2em] uppercase hover:bg-[#a8845f] transition-colors duration-200"
+            style={{ fontFamily: "'Gayathri', Helvetica" }}
           >
-            {item.label}
-          </a>
-        ))}
-      </nav>
-
-      <div className="flex w-full min-h-[769px]" id="welcome">
-        <div className="w-1/2 bg-[#fdf9f3] flex items-center justify-center p-8">
-          <img
-            src="/figmaAssets/rectangle-24.png"
-            alt="Coach Shanmuga Priya"
-            className="w-full max-h-[628px] object-cover"
-          />
+            Start Your Journey
+          </button>
+          <button
+            onClick={() => handleScroll("#services")}
+            className="px-10 py-4 border border-white/60 text-white text-sm font-bold tracking-[0.2em] uppercase hover:bg-white/10 transition-colors duration-200"
+            style={{ fontFamily: "'Gayathri', Helvetica" }}
+          >
+            Our Services
+          </button>
         </div>
+      </div>
 
-        <div className="w-1/2 bg-[#2c2721] flex flex-col items-center justify-center gap-8 p-12">
-          <h1 className="[font-family:'Amiri',Helvetica] font-normal text-[#fff9e4] text-[55px] text-center tracking-[2.75px] leading-normal">
-            DISCOVER YOURSELF
-          </h1>
-
-          <h2 className="[font-family:'Amiri',Helvetica] font-normal text-[#fff9e4] text-[32px] text-center tracking-[0] leading-normal">
-            Unlock Your Full Potential
-          </h2>
-
-          <div className="flex flex-col items-center gap-4 mt-12">
-            <a
-              href="#services"
-              className="[font-family:'Gayathri',Helvetica] font-bold text-[#fff9e4] text-xl tracking-[0] leading-[27px] hover:text-[#fff9e4]/70 transition-colors"
-            >
-              Start Your Journey
-            </a>
-            <ChevronDownIcon className="w-[30px] h-[30px] text-[#fdf9f3] border border-solid border-[#fdf9f3] rounded" />
-          </div>
-        </div>
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
+        <div className="w-px h-12 bg-white/40" />
       </div>
     </section>
   );

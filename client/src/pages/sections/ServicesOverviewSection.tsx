@@ -1,54 +1,77 @@
-import { Separator } from "@/components/ui/separator";
-
-const servicesData = [
+const services = [
   {
-    text: "Feeling Stressed or Overwhelmed? Learn techniques to manage stress and build emotional resilience.",
+    title: "Stress & Resilience",
+    description:
+      "Feeling overwhelmed? Learn proven techniques to manage stress and build lasting emotional resilience.",
   },
   {
-    text: "Uncertain About Your Future? Clarify your goals and create a roadmap for success.",
+    title: "Clarity & Direction",
+    description:
+      "Uncertain about your future? Clarify your goals and create a concrete roadmap for success.",
   },
   {
-    text: "Lacking Motivation? Get inspired and stay motivated with creative visualization and goal-setting strategies.",
+    title: "Motivation & Vision",
+    description:
+      "Lacking motivation? Reignite your drive with creative visualization and powerful goal-setting strategies.",
   },
   {
-    text: "Struggling with Self-Confidence? Boost your self-esteem and believe in your potential.",
+    title: "Self-Confidence",
+    description:
+      "Struggling with self-doubt? Boost your self-esteem and step into your true potential.",
   },
   {
-    text: "Want to Meet New Friends? Join a supportive community of like-minded teens who share your aspirations.",
+    title: "Community & Connection",
+    description:
+      "Want to meet like-minded people? Join a supportive community that shares your aspirations.",
   },
   {
-    text: "Need Direction? Discover your strengths and passions to guide your future choices.",
+    title: "Self-Discovery",
+    description:
+      "Need direction? Uncover your unique strengths and passions to guide every future decision.",
   },
 ];
 
 export const ServicesOverviewSection = (): JSX.Element => {
   return (
-    <section className="relative w-full bg-[#fdf9f3] py-12 px-4">
-      <div className="max-w-[1512px] mx-auto">
-        <Separator className="mb-12 bg-[#152734]" />
-
-        <div className="flex flex-col items-center mb-12">
-          <h2 className="[font-family:'Amiri',Helvetica] font-normal text-[#152734] text-[55px] text-center tracking-[2.75px] leading-normal mb-6">
-            SERVICES
+    <section className="w-full bg-[#fdf9f3] py-24 px-6">
+      <div className="max-w-[1200px] mx-auto">
+        <div className="text-center mb-16">
+          <p
+            className="text-[#bb9774] text-sm tracking-[0.3em] uppercase font-bold mb-4"
+            style={{ fontFamily: "'Gayathri', Helvetica" }}
+          >
+            What I Can Help You With
+          </p>
+          <h2
+            className="text-[#1c2b1c] text-[48px] leading-tight tracking-wide"
+            style={{ fontFamily: "'Amiri', Helvetica" }}
+          >
+            Services
           </h2>
-
-          <h3 className="[font-family:'Amiri',Helvetica] font-normal italic text-[#152734] text-[32px] text-center tracking-[0] leading-normal">
-            Why Join?
-          </h3>
         </div>
 
-        <div className="flex flex-col gap-10 max-w-[1324px] mx-auto px-4">
-          {servicesData.map((service, index) => (
-            <p
-              key={index}
-              className="[font-family:'Gayathri',Helvetica] font-bold text-[#152734] text-2xl tracking-[0.29px] leading-[50px]"
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {services.map((service, i) => (
+            <div
+              key={i}
+              className="bg-white border border-[#e8e0d5] p-8 group hover:shadow-lg transition-shadow duration-300"
             >
-              {service.text}
-            </p>
+              <div className="w-10 h-0.5 bg-[#bb9774] mb-6 group-hover:w-16 transition-all duration-300" />
+              <h3
+                className="text-[#1c2b1c] text-xl font-bold mb-4 tracking-wide"
+                style={{ fontFamily: "'Amiri', Helvetica" }}
+              >
+                {service.title}
+              </h3>
+              <p
+                className="text-[#555] text-base leading-relaxed"
+                style={{ fontFamily: "'Gayathri', Helvetica" }}
+              >
+                {service.description}
+              </p>
+            </div>
           ))}
         </div>
-
-        <Separator className="mt-12 bg-[#152734]" />
       </div>
     </section>
   );

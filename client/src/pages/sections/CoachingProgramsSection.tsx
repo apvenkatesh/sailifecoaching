@@ -1,47 +1,73 @@
-import { Separator } from "@/components/ui/separator";
-
-const coachingPrograms = [
+const programs = [
   {
+    label: "One-on-One",
     title: "Individual Coaching",
-    subtitle: "Personalized Guidance",
     description:
-      "Individual coaching sessions provide personalized guidance and support to help clients navigate challenges, set meaningful goals, and achieve personal growth. I work collaboratively with individuals to develop strategies for success and empower them to lead fulfilling lives.",
+      "Personalized coaching sessions tailored entirely to you. We work together to navigate your unique challenges, set meaningful goals, and build the strategies you need to achieve lasting personal growth.",
+    cta: "Book a Session",
   },
   {
+    label: "Community",
     title: "Group Workshops",
-    subtitle: "Community Learning",
     description:
-      "Join group workshops to engage in community learning and personalized development. These interactive sessions foster collaboration, growth, and shared experiences, creating a supportive environment for self-discovery and skill enhancement.",
+      "Join a supportive group of like-minded individuals in interactive workshops designed for collaboration, shared growth, and self-discovery. A powerful environment for building new skills and friendships.",
+    cta: "Join a Workshop",
   },
 ];
 
 export const CoachingProgramsSection = (): JSX.Element => {
   return (
-    <section className="relative w-full py-14">
-      <div className="bg-[#fdf9f3] py-14 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative">
-            {coachingPrograms.map((program, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <h2 className="[font-family:'Amiri',Helvetica] font-bold text-[#152734] text-4xl text-center tracking-[0] leading-normal mb-8">
-                  {program.title}
-                </h2>
-                <h3 className="text-[#152734] text-[22px] tracking-[0.44px] leading-normal [font-family:'Gayathri',Helvetica] font-bold mb-8 text-center">
-                  {program.subtitle}
-                </h3>
-                <p className="text-[#152734] text-2xl tracking-[0.48px] leading-[45px] [font-family:'Gayathri',Helvetica] font-bold text-center max-w-[556px]">
-                  {program.description}
-                </p>
-              </div>
-            ))}
-            <Separator
-              orientation="vertical"
-              className="absolute left-1/2 top-0 bottom-0 w-[3px] bg-[#152734] hidden md:block"
-            />
-          </div>
+    <section className="w-full bg-[#1c2b1c] py-24 px-6">
+      <div className="max-w-[1200px] mx-auto">
+        <div className="text-center mb-16">
+          <p
+            className="text-[#bb9774] text-sm tracking-[0.3em] uppercase font-bold mb-4"
+            style={{ fontFamily: "'Gayathri', Helvetica" }}
+          >
+            How We Work Together
+          </p>
+          <h2
+            className="text-white text-[48px] leading-tight tracking-wide"
+            style={{ fontFamily: "'Amiri', Helvetica" }}
+          >
+            Coaching Programs
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {programs.map((program, i) => (
+            <div
+              key={i}
+              className="border border-white/20 p-10 flex flex-col gap-6 hover:border-[#bb9774]/60 transition-colors duration-300"
+            >
+              <p
+                className="text-[#bb9774] text-xs tracking-[0.3em] uppercase font-bold"
+                style={{ fontFamily: "'Gayathri', Helvetica" }}
+              >
+                {program.label}
+              </p>
+              <h3
+                className="text-white text-3xl tracking-wide"
+                style={{ fontFamily: "'Amiri', Helvetica" }}
+              >
+                {program.title}
+              </h3>
+              <p
+                className="text-white/70 text-base leading-relaxed flex-1"
+                style={{ fontFamily: "'Gayathri', Helvetica" }}
+              >
+                {program.description}
+              </p>
+              <button
+                className="self-start px-8 py-3 border border-[#bb9774] text-[#bb9774] text-sm font-bold tracking-[0.2em] uppercase hover:bg-[#bb9774] hover:text-white transition-colors duration-200"
+                style={{ fontFamily: "'Gayathri', Helvetica" }}
+              >
+                {program.cta}
+              </button>
+            </div>
+          ))}
         </div>
       </div>
-      <Separator className="w-full h-[2px] bg-[#152734]" />
     </section>
   );
 };
