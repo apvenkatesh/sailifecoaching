@@ -15,13 +15,6 @@ export const HeroIntroSection = (): JSX.Element => {
       <div className="absolute inset-0 bg-[#1b2a3b]/78" />
 
       <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-4xl mx-auto">
-        <p
-          className="text-[#c8953d] text-xs tracking-[0.4em] uppercase mb-6 font-bold"
-          style={{ fontFamily: "'Raleway', sans-serif" }}
-        >
-          Certified Life Coach · MindValley
-        </p>
-
         <h1
           className="text-white text-[68px] md:text-[84px] font-bold leading-[1.1] tracking-tight mb-5"
           style={{ fontFamily: "'Raleway', sans-serif" }}
@@ -30,7 +23,7 @@ export const HeroIntroSection = (): JSX.Element => {
         </h1>
 
         <p
-          className="text-white/80 text-2xl font-light tracking-wide mb-14"
+          className="text-white/90 text-[1.95rem] font-bold tracking-wide mb-14"
           style={{ fontFamily: "'Open Sans', sans-serif" }}
         >
           Unlock Your Full Potential
@@ -46,7 +39,7 @@ export const HeroIntroSection = (): JSX.Element => {
           </button>
           <button
             onClick={() => scrollTo("services")}
-            className="px-10 py-4 border border-white/50 text-white text-xs font-bold tracking-[0.25em] uppercase hover:bg-white/10 transition-colors duration-200"
+            className="px-10 py-4 bg-[#1b2a3b] text-white text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#c8953d] transition-colors duration-200"
             style={{ fontFamily: "'Raleway', sans-serif" }}
           >
             Our Services
