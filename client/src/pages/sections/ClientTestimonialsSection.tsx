@@ -18,51 +18,51 @@ const testimonials = [
 
 export const ClientTestimonialsSection = (): JSX.Element => {
   return (
-    <section className="w-full bg-[#fdf9f3] py-24 px-6">
+    <section className="w-full bg-[#f5f4f0] py-24 px-6">
       <div className="max-w-[1200px] mx-auto">
         <div className="text-center mb-16">
           <p
-            className="text-[#bb9774] text-sm tracking-[0.3em] uppercase font-bold mb-4"
-            style={{ fontFamily: "'Gayathri', Helvetica" }}
+            className="text-[#c8953d] text-xs tracking-[0.4em] uppercase font-bold mb-4"
+            style={{ fontFamily: "'Raleway', sans-serif" }}
           >
             What Clients Say
           </p>
           <h2
-            className="text-[#1c2b1c] text-[48px] leading-tight tracking-wide"
-            style={{ fontFamily: "'Amiri', Helvetica" }}
+            className="text-[#1b2a3b] text-[44px] font-bold leading-tight tracking-tight"
+            style={{ fontFamily: "'Raleway', sans-serif" }}
           >
             Testimonials
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {testimonials.map((t, i) => (
             <div
               key={i}
-              className="bg-white border border-[#e8e0d5] p-8 flex flex-col gap-6"
+              className="bg-white border border-gray-200 p-8 flex flex-col gap-5 hover:shadow-lg transition-shadow duration-300"
             >
               <span
-                className="text-[#bb9774] text-6xl leading-none select-none"
-                style={{ fontFamily: "'Amiri', Helvetica" }}
+                className="text-[#c8953d] text-5xl leading-none select-none font-bold"
+                style={{ fontFamily: "'Raleway', sans-serif" }}
               >
                 "
               </span>
               <p
-                className="text-[#444] text-base leading-relaxed flex-1"
-                style={{ fontFamily: "'Gayathri', Helvetica" }}
+                className="text-[#555] text-sm leading-relaxed flex-1"
+                style={{ fontFamily: "'Open Sans', sans-serif" }}
               >
                 {t.text}
               </p>
-              <div className="border-t border-[#e8e0d5] pt-4">
+              <div className="border-t border-gray-200 pt-4">
                 <p
-                  className="text-[#1c2b1c] font-bold text-base"
-                  style={{ fontFamily: "'Gayathri', Helvetica" }}
+                  className="text-[#1b2a3b] font-bold text-sm"
+                  style={{ fontFamily: "'Raleway', sans-serif" }}
                 >
                   {t.name}
                 </p>
                 <p
-                  className="text-[#bb9774] text-sm tracking-wider uppercase"
-                  style={{ fontFamily: "'Gayathri', Helvetica" }}
+                  className="text-[#c8953d] text-xs tracking-wider uppercase mt-1"
+                  style={{ fontFamily: "'Raleway', sans-serif" }}
                 >
                   {t.role}
                 </p>

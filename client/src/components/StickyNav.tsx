@@ -51,7 +51,7 @@ export const StickyNav = () => {
     const id = href.replace("#", "");
     const el = document.getElementById(id);
     if (el) {
-      const top = el.getBoundingClientRect().top + window.scrollY - 72;
+      const top = el.getBoundingClientRect().top + window.scrollY - 80;
       window.scrollTo({ top, behavior: "smooth" });
     }
     setMenuOpen(false);
@@ -60,20 +60,26 @@ export const StickyNav = () => {
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        scrolled ? "bg-[#1c2b1c] shadow-lg" : "bg-[#1c2b1c]"
+        scrolled ? "bg-[#1b2a3b] shadow-xl" : "bg-[#1b2a3b]"
       }`}
     >
-      <div className="max-w-[1400px] mx-auto flex items-center justify-between h-[72px] px-8">
+      <div className="max-w-[1400px] mx-auto flex items-center justify-between h-[80px] px-8">
         <a
           href="#home"
           onClick={(e) => handleClick(e, "#home")}
-          className="flex items-center gap-3"
+          className="flex items-center gap-4"
         >
           <img
             src="/figmaAssets/frame-1.png"
             alt="Sai Life Coaching"
-            className="h-[52px] w-auto object-contain brightness-0 invert"
+            className="h-[64px] w-auto object-contain brightness-0 invert"
           />
+          <span
+            className="text-white text-xl font-bold tracking-wide hidden sm:block"
+            style={{ fontFamily: "'Raleway', sans-serif" }}
+          >
+            Sai Life Coaching
+          </span>
         </a>
 
         <nav className="hidden md:flex items-center gap-8">
@@ -84,11 +90,11 @@ export const StickyNav = () => {
                 key={item.id}
                 href={item.href}
                 onClick={(e) => handleClick(e, item.href)}
-                style={{ fontFamily: "'Gayathri', Helvetica" }}
-                className={`text-base font-bold tracking-widest uppercase transition-colors duration-200 ${
+                style={{ fontFamily: "'Raleway', sans-serif" }}
+                className={`text-sm font-bold tracking-widest uppercase transition-colors duration-200 ${
                   isActive
-                    ? "text-[#bb9774]"
-                    : "text-white/80 hover:text-white"
+                    ? "text-[#c8953d]"
+                    : "text-white/75 hover:text-white"
                 }`}
               >
                 {item.label}
@@ -106,15 +112,15 @@ export const StickyNav = () => {
       </div>
 
       {menuOpen && (
-        <div className="md:hidden bg-[#1c2b1c] border-t border-white/10 px-8 pb-6 flex flex-col gap-4">
+        <div className="md:hidden bg-[#1b2a3b] border-t border-white/10 px-8 pb-6 flex flex-col gap-5">
           {navigationItems.map((item) => (
             <a
               key={item.id}
               href={item.href}
               onClick={(e) => handleClick(e, item.href)}
-              style={{ fontFamily: "'Gayathri', Helvetica" }}
-              className={`text-base font-bold tracking-widest uppercase ${
-                activeSection === item.id ? "text-[#bb9774]" : "text-white/80"
+              style={{ fontFamily: "'Raleway', sans-serif" }}
+              className={`text-sm font-bold tracking-widest uppercase ${
+                activeSection === item.id ? "text-[#c8953d]" : "text-white/75"
               }`}
             >
               {item.label}

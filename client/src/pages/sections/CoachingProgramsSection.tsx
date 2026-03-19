@@ -17,18 +17,18 @@ const programs = [
 
 export const CoachingProgramsSection = (): JSX.Element => {
   return (
-    <section className="w-full bg-[#1c2b1c] py-24 px-6">
+    <section className="w-full bg-[#1b2a3b] py-24 px-6">
       <div className="max-w-[1200px] mx-auto">
         <div className="text-center mb-16">
           <p
-            className="text-[#bb9774] text-sm tracking-[0.3em] uppercase font-bold mb-4"
-            style={{ fontFamily: "'Gayathri', Helvetica" }}
+            className="text-[#c8953d] text-xs tracking-[0.4em] uppercase font-bold mb-4"
+            style={{ fontFamily: "'Raleway', sans-serif" }}
           >
             How We Work Together
           </p>
           <h2
-            className="text-white text-[48px] leading-tight tracking-wide"
-            style={{ fontFamily: "'Amiri', Helvetica" }}
+            className="text-white text-[44px] font-bold leading-tight tracking-tight"
+            style={{ fontFamily: "'Raleway', sans-serif" }}
           >
             Coaching Programs
           </h2>
@@ -38,29 +38,29 @@ export const CoachingProgramsSection = (): JSX.Element => {
           {programs.map((program, i) => (
             <div
               key={i}
-              className="border border-white/20 p-10 flex flex-col gap-6 hover:border-[#bb9774]/60 transition-colors duration-300"
+              className="border border-white/20 p-10 flex flex-col gap-6 hover:border-[#c8953d]/70 transition-colors duration-300 group"
             >
               <p
-                className="text-[#bb9774] text-xs tracking-[0.3em] uppercase font-bold"
-                style={{ fontFamily: "'Gayathri', Helvetica" }}
+                className="text-[#c8953d] text-xs tracking-[0.4em] uppercase font-bold"
+                style={{ fontFamily: "'Raleway', sans-serif" }}
               >
                 {program.label}
               </p>
               <h3
-                className="text-white text-3xl tracking-wide"
-                style={{ fontFamily: "'Amiri', Helvetica" }}
+                className="text-white text-2xl font-bold tracking-wide"
+                style={{ fontFamily: "'Raleway', sans-serif" }}
               >
                 {program.title}
               </h3>
               <p
-                className="text-white/70 text-base leading-relaxed flex-1"
-                style={{ fontFamily: "'Gayathri', Helvetica" }}
+                className="text-white/65 text-sm leading-relaxed flex-1"
+                style={{ fontFamily: "'Open Sans', sans-serif" }}
               >
                 {program.description}
               </p>
               <button
-                className="self-start px-8 py-3 border border-[#bb9774] text-[#bb9774] text-sm font-bold tracking-[0.2em] uppercase hover:bg-[#bb9774] hover:text-white transition-colors duration-200"
-                style={{ fontFamily: "'Gayathri', Helvetica" }}
+                className="self-start px-8 py-3 border border-[#c8953d] text-[#c8953d] text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#c8953d] hover:text-white transition-colors duration-200"
+                style={{ fontFamily: "'Raleway', sans-serif" }}
               >
                 {program.cta}
               </button>
