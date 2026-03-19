@@ -84,7 +84,7 @@ export const StickyNav = () => {
                 href={item.href}
                 onClick={(e) => handleClick(e, item.href)}
                 style={{ fontFamily: "'Raleway', sans-serif" }}
-                className={`text-sm font-bold tracking-widest uppercase transition-colors duration-200 ${
+                className={`text-[1.05rem] font-bold tracking-widest uppercase transition-colors duration-200 ${
                   isActive
                     ? "text-[#c8953d]"
                     : "text-[#3d2414] hover:text-[#c8953d]"
@@ -114,7 +114,7 @@ export const StickyNav = () => {
               href={item.href}
               onClick={(e) => handleClick(e, item.href)}
               style={{ fontFamily: "'Raleway', sans-serif" }}
-              className={`text-sm font-bold tracking-widest uppercase ${
+              className={`text-[1.05rem] font-bold tracking-widest uppercase ${
                 activeSection === item.id
                   ? "text-[#c8953d]"
                   : "text-[#3d2414]"
