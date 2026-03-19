@@ -53,7 +53,7 @@ export const HeroIntroSection = (): JSX.Element => {
 
         {/* Right — circular image */}
         <div className="flex-shrink-0 flex items-center justify-center">
-          <div className="w-[320px] h-[320px] md:w-[400px] md:h-[400px] rounded-full overflow-hidden">
+          <div className="w-[416px] h-[416px] md:w-[520px] md:h-[520px] rounded-full overflow-hidden">
             <img
               src="/figmaAssets/rectangle-24.png"
               alt="Coach Shanmuga Priya"
