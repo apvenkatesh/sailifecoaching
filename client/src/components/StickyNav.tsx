@@ -10,7 +10,7 @@ const navigationItems = [
   { label: "Contact", href: "#contact", id: "contact" },
 ];
 
-const NAV_HEIGHT = 100;
+const NAV_HEIGHT = 130;
 
 export const StickyNav = () => {
   const [activeSection, setActiveSection] = useState("home");
@@ -54,7 +54,7 @@ export const StickyNav = () => {
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-white shadow-md border-b border-gray-100">
-      <div className="max-w-[1400px] mx-auto flex items-center justify-between h-[100px] px-8">
+      <div className="max-w-[1400px] mx-auto flex items-center justify-between h-[130px] px-8">
         {/* Logo + Brand */}
         <a
           href="#home"
@@ -64,10 +64,10 @@ export const StickyNav = () => {
           <img
             src="/figmaAssets/frame-1.png"
             alt="Sai Life Coaching"
-            className="h-[80px] w-auto object-contain"
+            className="h-[120px] w-auto object-contain"
           />
           <span
-            className="text-[#3d2414] text-3xl font-bold tracking-wide hidden sm:block"
+            className="text-[#3d2414] text-[2.4rem] font-bold tracking-wide hidden sm:block"
             style={{ fontFamily: "'Raleway', sans-serif" }}
           >
             Sai Life Coaching

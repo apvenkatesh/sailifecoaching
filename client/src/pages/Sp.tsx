@@ -9,7 +9,7 @@ export const Sp = (): JSX.Element => {
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
-      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 100, behavior: "smooth" });
+      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 130, behavior: "smooth" });
     }
   };
 
@@ -17,7 +17,7 @@ export const Sp = (): JSX.Element => {
     <div className="bg-white w-full">
       <StickyNav />
 
-      <div className="pt-[100px]">
+      <div className="pt-[130px]">
         <section id="home">
           <HeroIntroSection />
         </section>
