@@ -15,26 +15,26 @@ export const HeroIntroSection = (): JSX.Element => {
         style={{ backgroundImage: "url(/figmaAssets/hero-bg.png)" }}
       />
       {/* Subtle overlay to ensure text readability */}
-      <div className="absolute inset-0 bg-white/30" />
+      <div className="absolute inset-0 bg-black/20" />
 
       {/* Text content */}
-      <div className="relative z-10 w-full max-w-[1200px] mx-auto px-8 py-20 flex flex-col items-start text-left">
+      <div className="relative z-10 w-full max-w-[1200px] mx-auto px-8 py-20 flex flex-col items-center text-center">
         <p
-          className="text-[#c8953d] text-xs tracking-[0.4em] uppercase font-bold mb-6"
+          className="text-white text-xs tracking-[0.4em] uppercase font-bold mb-6 drop-shadow"
           style={{ fontFamily: "'Raleway', sans-serif" }}
         >
           Life Coaching with Shanmuga Priya
         </p>
 
         <h1
-          className="text-[#c8953d] text-[58px] md:text-[72px] font-bold leading-[1.1] tracking-tight mb-6 max-w-[600px]"
+          className="text-white text-[58px] md:text-[72px] font-bold leading-[1.1] tracking-tight mb-6 drop-shadow-lg"
           style={{ fontFamily: "'Raleway', sans-serif" }}
         >
           Discover Yourself
         </h1>
 
         <p
-          className="text-[#1b2a3b] text-[1.6rem] font-light tracking-wide mb-10 max-w-[500px]"
+          className="text-white/90 text-[1.6rem] font-light tracking-wide mb-10 drop-shadow"
           style={{ fontFamily: "'Open Sans', sans-serif" }}
         >
           Unlock Your Full Potential
