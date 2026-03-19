@@ -62,16 +62,10 @@ export const StickyNav = () => {
           className="flex items-center gap-4"
         >
           <img
-            src="/figmaAssets/frame-1.png"
+            src="/figmaAssets/logo-transparent.png"
             alt="Sai Life Coaching"
-            className="h-[120px] w-auto object-contain"
+            className="h-[110px] w-auto object-contain"
           />
-          <span
-            className="text-[#3d2414] text-[3.12rem] font-bold tracking-wide hidden sm:block"
-            style={{ fontFamily: "'Dancing Script', cursive" }}
-          >
-            Sai Life Coaching
-          </span>
         </a>
 
         {/* Desktop nav */}
