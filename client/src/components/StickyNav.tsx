@@ -10,16 +10,11 @@ const navigationItems = [
   { label: "Contact", href: "#contact", id: "contact" },
 ];
 
+const NAV_HEIGHT = 100;
+
 export const StickyNav = () => {
   const [activeSection, setActiveSection] = useState("home");
-  const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useEffect(() => {
     const sectionIds = navigationItems.map((item) => item.id);
@@ -51,19 +46,16 @@ export const StickyNav = () => {
     const id = href.replace("#", "");
     const el = document.getElementById(id);
     if (el) {
-      const top = el.getBoundingClientRect().top + window.scrollY - 80;
+      const top = el.getBoundingClientRect().top + window.scrollY - NAV_HEIGHT;
       window.scrollTo({ top, behavior: "smooth" });
     }
     setMenuOpen(false);
   };
 
   return (
-    <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        scrolled ? "bg-[#1b2a3b] shadow-xl" : "bg-[#1b2a3b]"
-      }`}
-    >
-      <div className="max-w-[1400px] mx-auto flex items-center justify-between h-[80px] px-8">
+    <header className="fixed top-0 left-0 w-full z-50 bg-white shadow-md border-b border-gray-100">
+      <div className="max-w-[1400px] mx-auto flex items-center justify-between h-[100px] px-8">
+        {/* Logo + Brand */}
         <a
           href="#home"
           onClick={(e) => handleClick(e, "#home")}
@@ -72,16 +64,17 @@ export const StickyNav = () => {
           <img
             src="/figmaAssets/frame-1.png"
             alt="Sai Life Coaching"
-            className="h-[64px] w-auto object-contain brightness-0 invert"
+            className="h-[80px] w-auto object-contain"
           />
           <span
-            className="text-white text-xl font-bold tracking-wide hidden sm:block"
+            className="text-[#3d2414] text-3xl font-bold tracking-wide hidden sm:block"
             style={{ fontFamily: "'Raleway', sans-serif" }}
           >
             Sai Life Coaching
           </span>
         </a>
 
+        {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-8">
           {navigationItems.map((item) => {
             const isActive = activeSection === item.id;
@@ -94,7 +87,7 @@ export const StickyNav = () => {
                 className={`text-sm font-bold tracking-widest uppercase transition-colors duration-200 ${
                   isActive
                     ? "text-[#c8953d]"
-                    : "text-white/75 hover:text-white"
+                    : "text-[#3d2414] hover:text-[#c8953d]"
                 }`}
               >
                 {item.label}
@@ -103,16 +96,18 @@ export const StickyNav = () => {
           })}
         </nav>
 
+        {/* Mobile menu button */}
         <button
-          className="md:hidden text-white"
+          className="md:hidden text-[#3d2414]"
           onClick={() => setMenuOpen(!menuOpen)}
         >
-          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          {menuOpen ? <X size={26} /> : <Menu size={26} />}
         </button>
       </div>
 
+      {/* Mobile dropdown */}
       {menuOpen && (
-        <div className="md:hidden bg-[#1b2a3b] border-t border-white/10 px-8 pb-6 flex flex-col gap-5">
+        <div className="md:hidden bg-white border-t border-gray-100 px-8 pb-6 flex flex-col gap-5">
           {navigationItems.map((item) => (
             <a
               key={item.id}
@@ -120,7 +115,9 @@ export const StickyNav = () => {
               onClick={(e) => handleClick(e, item.href)}
               style={{ fontFamily: "'Raleway', sans-serif" }}
               className={`text-sm font-bold tracking-widest uppercase ${
-                activeSection === item.id ? "text-[#c8953d]" : "text-white/75"
+                activeSection === item.id
+                  ? "text-[#c8953d]"
+                  : "text-[#3d2414]"
               }`}
             >
               {item.label}

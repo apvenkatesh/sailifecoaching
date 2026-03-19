@@ -2,7 +2,7 @@ export const HeroIntroSection = (): JSX.Element => {
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
-      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 80, behavior: "smooth" });
+      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 100, behavior: "smooth" });
     }
   };
 
