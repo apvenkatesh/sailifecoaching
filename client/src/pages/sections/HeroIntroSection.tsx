@@ -7,10 +7,8 @@ export const HeroIntroSection = (): JSX.Element => {
   };
 
   return (
-    <section className="relative w-full min-h-screen flex items-center overflow-hidden">
-      <div className="absolute inset-0 bg-[#1b2a3b]" />
-
-      <div className="relative z-10 w-full max-w-[1200px] mx-auto px-8 py-24 flex flex-col md:flex-row items-center gap-16">
+    <section className="relative w-full flex items-center overflow-hidden bg-white">
+      <div className="w-full max-w-[1200px] mx-auto px-8 py-16 flex flex-col md:flex-row items-center gap-16">
 
         {/* Left — text + buttons */}
         <div className="flex-1 flex flex-col items-start text-left">
@@ -23,14 +21,14 @@ export const HeroIntroSection = (): JSX.Element => {
 
           <h1
             className="text-[#c8953d] text-[58px] md:text-[72px] font-bold leading-[1.1] tracking-tight mb-6"
-            style={{ fontFamily: "'Raleway', sans-serif", WebkitTextStroke: "1.5px black" }}
+            style={{ fontFamily: "'Raleway', sans-serif" }}
           >
             Discover Yourself
           </h1>
 
           <p
-            className="text-white/90 text-[1.6rem] font-light tracking-wide mb-10"
-            style={{ fontFamily: "'Open Sans', sans-serif", WebkitTextStroke: "1px black" }}
+            className="text-[#1b2a3b] text-[1.6rem] font-light tracking-wide mb-10"
+            style={{ fontFamily: "'Open Sans', sans-serif" }}
           >
             Unlock Your Full Potential
           </p>
@@ -55,23 +53,15 @@ export const HeroIntroSection = (): JSX.Element => {
 
         {/* Right — circular image */}
         <div className="flex-shrink-0 flex items-center justify-center">
-          <div className="relative">
-            {/* Outer gold ring */}
-            <div className="w-[340px] h-[340px] md:w-[420px] md:h-[420px] rounded-full border-4 border-[#c8953d] p-1">
-              <img
-                src="/figmaAssets/rectangle-24.png"
-                alt="Coach Shanmuga Priya"
-                className="w-full h-full rounded-full object-cover object-top"
-              />
-            </div>
+          <div className="w-[320px] h-[320px] md:w-[400px] md:h-[400px] rounded-full overflow-hidden">
+            <img
+              src="/figmaAssets/rectangle-24.png"
+              alt="Coach Shanmuga Priya"
+              className="w-full h-full object-cover object-top"
+            />
           </div>
         </div>
 
-      </div>
-
-      {/* Scroll indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1">
-        <div className="w-px h-14 bg-white/30 animate-pulse" />
       </div>
     </section>
   );
