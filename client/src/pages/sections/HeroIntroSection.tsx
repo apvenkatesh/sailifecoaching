@@ -7,7 +7,7 @@ export const HeroIntroSection = (): JSX.Element => {
   };
 
   return (
-    <section className="relative w-full overflow-hidden" style={{ minHeight: "600px" }}>
+    <section className="relative w-full overflow-hidden flex flex-col justify-end" style={{ minHeight: "600px" }}>
 
       {/* Background image */}
       <div
@@ -18,7 +18,7 @@ export const HeroIntroSection = (): JSX.Element => {
       <div className="absolute inset-0 bg-black/20" />
 
       {/* Text content */}
-      <div className="relative z-10 w-full max-w-[1200px] mx-auto px-8 py-20 flex flex-col items-center text-center">
+      <div className="relative z-10 w-full max-w-[1200px] mx-auto px-8 pt-0 pb-12 flex flex-col items-center text-center">
         <p
           className="text-white text-xs tracking-[0.4em] uppercase font-bold mb-6 drop-shadow"
           style={{ fontFamily: "'Raleway', sans-serif" }}
