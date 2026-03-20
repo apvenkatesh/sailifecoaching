@@ -1,5 +1,9 @@
 import { User, Users } from "lucide-react";
 
+interface Props {
+  onOpenBooking: () => void;
+}
+
 const programs = [
   {
     icon: User,
@@ -15,11 +19,11 @@ const programs = [
     title: "Group Workshops",
     description:
       "Join a supportive group of like-minded individuals in interactive workshops designed for collaboration, shared growth, and self-discovery. A powerful environment for building new skills and friendships.",
-    cta: "Join a Workshop",
+    cta: "Book a Session",
   },
 ];
 
-export const CoachingProgramsSection = (): JSX.Element => {
+export const CoachingProgramsSection = ({ onOpenBooking }: Props): JSX.Element => {
   return (
     <section className="w-full bg-[#1b2a3b] py-24 px-6">
       <div className="max-w-[1200px] mx-auto">
@@ -46,7 +50,6 @@ export const CoachingProgramsSection = (): JSX.Element => {
                 key={i}
                 className="relative mt-7 border border-white/20 px-10 pt-12 pb-10 flex flex-col gap-5 hover:border-[#c8953d]/70 transition-colors duration-300 group"
               >
-                {/* Icon — half outside the card top */}
                 <div className="absolute -top-7 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-white flex items-center justify-center group-hover:bg-[#c8953d] transition-colors duration-300">
                   <Icon
                     className="text-[#c8953d] group-hover:text-white transition-colors duration-300"
@@ -73,6 +76,7 @@ export const CoachingProgramsSection = (): JSX.Element => {
                   {program.description}
                 </p>
                 <button
+                  onClick={onOpenBooking}
                   className="self-start px-8 py-3 border border-[#c8953d] text-[#c8953d] text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#c8953d] hover:text-white transition-colors duration-200"
                   style={{ fontFamily: "'Raleway', sans-serif" }}
                 >

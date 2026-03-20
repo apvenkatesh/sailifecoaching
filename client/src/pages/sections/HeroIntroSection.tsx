@@ -1,4 +1,8 @@
-export const HeroIntroSection = (): JSX.Element => {
+interface Props {
+  onOpenBooking: () => void;
+}
+
+export const HeroIntroSection = ({ onOpenBooking }: Props): JSX.Element => {
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
@@ -8,16 +12,12 @@ export const HeroIntroSection = (): JSX.Element => {
 
   return (
     <section className="relative w-full overflow-hidden flex flex-col justify-end" style={{ minHeight: "600px" }}>
-
-      {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url(/figmaAssets/hero-bg.png)" }}
       />
-      {/* Subtle overlay to ensure text readability */}
       <div className="absolute inset-0 bg-black/20" />
 
-      {/* Text content */}
       <div className="relative z-10 w-full max-w-[1200px] mx-auto px-8 pt-0 pb-12 flex flex-col items-center text-center">
         <p
           className="text-white text-xs tracking-[0.4em] uppercase font-bold mb-6 drop-shadow"
@@ -42,11 +42,11 @@ export const HeroIntroSection = (): JSX.Element => {
 
         <div className="flex flex-col sm:flex-row gap-4">
           <button
-            onClick={() => scrollTo("contact")}
+            onClick={onOpenBooking}
             className="px-10 py-4 bg-[#c8953d] text-white text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#b07e2c] transition-colors duration-200"
             style={{ fontFamily: "'Raleway', sans-serif" }}
           >
-            Start Your Journey
+            Book a Session
           </button>
           <button
             onClick={() => scrollTo("services")}
@@ -57,7 +57,6 @@ export const HeroIntroSection = (): JSX.Element => {
           </button>
         </div>
       </div>
-
     </section>
   );
 };

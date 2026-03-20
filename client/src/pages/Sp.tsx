@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { StickyNav } from "@/components/StickyNav";
+import { BookingModal } from "@/components/BookingModal";
 import { HeroIntroSection } from "./sections/HeroIntroSection";
 import { ServicesOverviewSection } from "./sections/ServicesOverviewSection";
 import { CoachingProgramsSection } from "./sections/CoachingProgramsSection";
@@ -6,6 +8,8 @@ import { ClientTestimonialsSection } from "./sections/ClientTestimonialsSection"
 import { ContactInfoSection } from "./sections/ContactInfoSection";
 
 export const Sp = (): JSX.Element => {
+  const [bookingOpen, setBookingOpen] = useState(false);
+
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
@@ -16,10 +20,11 @@ export const Sp = (): JSX.Element => {
   return (
     <div className="bg-white w-full">
       <StickyNav />
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
 
       <div className="pt-[130px]">
         <section id="home">
-          <HeroIntroSection />
+          <HeroIntroSection onOpenBooking={() => setBookingOpen(true)} />
         </section>
 
         {/* About */}
@@ -80,11 +85,11 @@ export const Sp = (): JSX.Element => {
                 performance, and effectively manage stress.
               </p>
               <button
-                onClick={() => scrollTo("contact")}
+                onClick={() => setBookingOpen(true)}
                 className="self-start mt-2 px-10 py-4 bg-[#1b2a3b] text-white text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#c8953d] transition-colors duration-200"
                 style={{ fontFamily: "'Raleway', sans-serif" }}
               >
-                Work With Me
+                Book a Session
               </button>
             </div>
           </div>
@@ -112,18 +117,18 @@ export const Sp = (): JSX.Element => {
               to lasting change.
             </p>
             <button
-              onClick={() => scrollTo("contact")}
+              onClick={() => setBookingOpen(true)}
               className="px-10 py-4 bg-white text-[#1b2a3b] text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#f5f4f0] transition-colors duration-200"
               style={{ fontFamily: "'Raleway', sans-serif" }}
             >
-              Get Started Today
+              Book a Session
             </button>
           </div>
         </div>
 
         {/* Programs */}
         <section id="programs">
-          <CoachingProgramsSection />
+          <CoachingProgramsSection onOpenBooking={() => setBookingOpen(true)} />
         </section>
 
         {/* Testimonials */}
