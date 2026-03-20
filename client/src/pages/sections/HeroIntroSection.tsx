@@ -42,11 +42,11 @@ export const HeroIntroSection = ({ onOpenBooking }: Props): JSX.Element => {
 
         <div className="flex flex-col sm:flex-row gap-4">
           <button
-            onClick={onOpenBooking}
+            onClick={() => scrollTo("programs")}
             className="px-10 py-4 bg-[#c8953d] text-white text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#b07e2c] transition-colors duration-200"
             style={{ fontFamily: "'Raleway', sans-serif" }}
           >
-            Book a Session
+            Start Your Journey
           </button>
           <button
             onClick={() => scrollTo("services")}
