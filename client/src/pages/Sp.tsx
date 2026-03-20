@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { StickyNav } from "@/components/StickyNav";
 import { BookingModal } from "@/components/BookingModal";
+import { WorkshopModal } from "@/components/WorkshopModal";
 import { HeroIntroSection } from "./sections/HeroIntroSection";
 import { ServicesOverviewSection } from "./sections/ServicesOverviewSection";
 import { CoachingProgramsSection } from "./sections/CoachingProgramsSection";
@@ -9,6 +10,7 @@ import { ContactInfoSection } from "./sections/ContactInfoSection";
 
 export const Sp = (): JSX.Element => {
   const [bookingOpen, setBookingOpen] = useState(false);
+  const [workshopOpen, setWorkshopOpen] = useState(false);
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
@@ -21,6 +23,7 @@ export const Sp = (): JSX.Element => {
     <div className="bg-white w-full">
       <StickyNav />
       <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
+      <WorkshopModal isOpen={workshopOpen} onClose={() => setWorkshopOpen(false)} />
 
       <div className="pt-[130px]">
         <section id="home">
@@ -128,7 +131,7 @@ export const Sp = (): JSX.Element => {
 
         {/* Programs */}
         <section id="programs">
-          <CoachingProgramsSection onOpenBooking={() => setBookingOpen(true)} />
+          <CoachingProgramsSection onOpenBooking={() => setBookingOpen(true)} onOpenWorkshop={() => setWorkshopOpen(true)} />
         </section>
 
         {/* Testimonials */}

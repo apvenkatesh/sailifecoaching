@@ -1,7 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertAppointmentSchema, type Appointment } from "@shared/schema";
+import { insertAppointmentSchema, insertWorkshopSignupSchema, type Appointment, type WorkshopSignup } from "@shared/schema";
+import { fetchWorkshopsFromSheet, type WorkshopRow } from "./googleSheets";
 import nodemailer from "nodemailer";
 import { addMonths, isBefore, isAfter, startOfDay, parse as dateParse } from "date-fns";
 
@@ -314,6 +315,144 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       return res.json({ success: true });
     } catch (err) {
       console.error("/api/appointments/:id DELETE:", err);
+      return res.status(500).json({ error: "Cancel failed" });
+    }
+  });
+
+  /* ── Workshop emails ─────────────────────────────────────────── */
+  async function sendWorkshopEmail(to: string, subject: string, html: string) {
+    const transporter = getTransporter();
+    if (!transporter) return;
+    try {
+      await transporter.sendMail({ from: `"Sai Life Coaching" <${GMAIL_USER}>`, to, subject, html });
+      console.log(`[Email] Sent to ${to}: ${subject}`);
+    } catch (err) { console.error("[Email] workshop send failed:", err); }
+  }
+
+  async function sendWorkshopSignupEmails(signup: WorkshopSignup, workshop: WorkshopRow) {
+    const details = `<table style="width:100%;border-collapse:collapse;margin:16px 0;">
+      <tr><td style="padding:8px;font-weight:bold;color:#555;">Workshop</td><td style="padding:8px;">${workshop.title}</td></tr>
+      <tr style="background:#f9f9f9"><td style="padding:8px;font-weight:bold;color:#555;">Date</td><td style="padding:8px;">${workshop.date}</td></tr>
+      <tr><td style="padding:8px;font-weight:bold;color:#555;">Time</td><td style="padding:8px;">${workshop.time}</td></tr>
+    </table>`;
+    const customerHtml = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+      <h2 style="color:#1b2a3b;">You're Signed Up!</h2>
+      <p>Hi ${signup.firstName},</p>
+      <p>Thank you for signing up for our group workshop. Here are your details:</p>
+      ${details}
+      <p style="background:#f5f4f0;padding:16px;border-left:4px solid #c8953d;">We'll send you joining instructions closer to the date. Looking forward to seeing you there!</p>
+      <p style="color:#888;font-size:12px;">Sai Life Coaching · Coach Shanmuga Priya</p>
+    </div>`;
+    const coachHtml = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+      <h2 style="color:#1b2a3b;">New Workshop Signup</h2>
+      <p><strong>${signup.firstName} ${signup.lastName}</strong> (${signup.email}, ${signup.phone}) signed up for <strong>${workshop.title}</strong> on ${workshop.date}.</p>
+    </div>`;
+    await Promise.allSettled([
+      sendWorkshopEmail(signup.email, `Workshop Confirmed: ${workshop.title} — ${workshop.date}`, customerHtml),
+      sendWorkshopEmail(COACH_EMAIL, `New Workshop Signup: ${signup.firstName} ${signup.lastName} — ${workshop.title}`, coachHtml),
+    ]);
+  }
+
+  async function sendWorkshopCancelEmails(signup: WorkshopSignup, workshop: WorkshopRow | null) {
+    const workshopLabel = workshop ? `${workshop.title} (${workshop.date})` : signup.workshopId;
+    const customerHtml = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+      <h2 style="color:#1b2a3b;">Workshop Registration Cancelled</h2>
+      <p>Hi ${signup.firstName},</p>
+      <p>Your registration for <strong>${workshopLabel}</strong> has been cancelled. We hope to see you at a future workshop!</p>
+      <p style="color:#888;font-size:12px;">Sai Life Coaching · Coach Shanmuga Priya</p>
+    </div>`;
+    const coachHtml = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+      <h2 style="color:#1b2a3b;">Workshop Signup Cancelled</h2>
+      <p><strong>${signup.firstName} ${signup.lastName}</strong> (${signup.email}) cancelled their registration for <strong>${workshopLabel}</strong>.</p>
+    </div>`;
+    await Promise.allSettled([
+      sendWorkshopEmail(signup.email, `Registration Cancelled: ${workshopLabel}`, customerHtml),
+      sendWorkshopEmail(COACH_EMAIL, `Cancelled Workshop Signup: ${signup.firstName} ${signup.lastName}`, coachHtml),
+    ]);
+  }
+
+  /* ── Workshop routes ─────────────────────────────────────────── */
+
+  // List workshops with available slots
+  app.get("/api/workshops", async (_req, res) => {
+    try {
+      const workshops = await fetchWorkshopsFromSheet();
+      const withSlots = await Promise.all(
+        workshops.map(async (w) => {
+          const signedUp = await storage.getActiveSignupCountByWorkshop(w.id);
+          return { ...w, signedUp, availableSlots: Math.max(0, w.totalSlots - signedUp) };
+        })
+      );
+      return res.json({ workshops: withSlots });
+    } catch (err) {
+      console.error("/api/workshops GET:", err);
+      return res.status(500).json({ error: "Failed to fetch workshops" });
+    }
+  });
+
+  // Sign up for workshop
+  app.post("/api/workshop-signup", async (req, res) => {
+    try {
+      const parsed = insertWorkshopSignupSchema.safeParse({ ...req.body, email: req.body.email?.toLowerCase() });
+      if (!parsed.success) return res.status(400).json({ error: "Invalid data", details: parsed.error.flatten() });
+
+      // Check capacity
+      const workshops = await fetchWorkshopsFromSheet();
+      const workshop = workshops.find((w) => w.id === parsed.data.workshopId);
+      if (!workshop) return res.status(404).json({ error: "Workshop not found" });
+
+      const signedUp = await storage.getActiveSignupCountByWorkshop(parsed.data.workshopId);
+      if (signedUp >= workshop.totalSlots) return res.status(409).json({ error: "This workshop is fully booked." });
+
+      // Check duplicate
+      const existing = await storage.getActiveSignupByWorkshopAndEmail(parsed.data.workshopId, parsed.data.email);
+      if (existing) return res.status(409).json({ error: "You are already signed up for this workshop." });
+
+      const signup = await storage.createWorkshopSignup(parsed.data);
+      sendWorkshopSignupEmails(signup, workshop).catch(console.error);
+      return res.json({ success: true, signup });
+    } catch (err) {
+      console.error("/api/workshop-signup POST:", err);
+      return res.status(500).json({ error: "Signup failed" });
+    }
+  });
+
+  // Look up signups by email
+  app.get("/api/workshop-signups/lookup", async (req, res) => {
+    try {
+      const email = (req.query.email as string)?.toLowerCase();
+      if (!email) return res.status(400).json({ error: "email required" });
+      const signups = await storage.getWorkshopSignupsByEmail(email);
+      const workshops = await fetchWorkshopsFromSheet();
+      const enriched = signups.map((s) => {
+        const w = workshops.find((w) => w.id === s.workshopId);
+        return { ...s, workshopTitle: w?.title || s.workshopId, workshopDate: w?.date || "", workshopTime: w?.time || "" };
+      });
+      return res.json({ signups: enriched });
+    } catch (err) {
+      console.error("/api/workshop-signups/lookup:", err);
+      return res.status(500).json({ error: "Lookup failed" });
+    }
+  });
+
+  // Cancel workshop signup
+  app.delete("/api/workshop-signups/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const email = (req.body.email as string)?.toLowerCase();
+      if (!email) return res.status(400).json({ error: "Email required" });
+      const existing = await storage.getWorkshopSignupById(id);
+      if (!existing) return res.status(404).json({ error: "Signup not found" });
+      if (existing.email !== email) return res.status(403).json({ error: "Not authorised" });
+      if (existing.status !== "active") return res.status(400).json({ error: "Already cancelled" });
+      const cancelled = await storage.cancelWorkshopSignup(id);
+      if (!cancelled) return res.status(500).json({ error: "Cancel failed" });
+      const workshops = await fetchWorkshopsFromSheet();
+      const workshop = workshops.find((w) => w.id === cancelled.workshopId);
+      sendWorkshopCancelEmails(cancelled, workshop || null).catch(console.error);
+      return res.json({ success: true });
+    } catch (err) {
+      console.error("/api/workshop-signups/:id DELETE:", err);
       return res.status(500).json({ error: "Cancel failed" });
     }
   });

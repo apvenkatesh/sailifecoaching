@@ -2,6 +2,7 @@ import { User, Users } from "lucide-react";
 
 interface Props {
   onOpenBooking: () => void;
+  onOpenWorkshop: () => void;
 }
 
 const programs = [
@@ -12,6 +13,7 @@ const programs = [
     description:
       "Personalized coaching sessions tailored entirely to you. We work together to navigate your unique challenges, set meaningful goals, and build the strategies you need to achieve lasting personal growth.",
     cta: "Book a Session",
+    type: "coaching" as const,
   },
   {
     icon: Users,
@@ -19,11 +21,12 @@ const programs = [
     title: "Group Workshops",
     description:
       "Join a supportive group of like-minded individuals in interactive workshops designed for collaboration, shared growth, and self-discovery. A powerful environment for building new skills and friendships.",
-    cta: "Book a Session",
+    cta: "Join Workshop",
+    type: "workshop" as const,
   },
 ];
 
-export const CoachingProgramsSection = ({ onOpenBooking }: Props): JSX.Element => {
+export const CoachingProgramsSection = ({ onOpenBooking, onOpenWorkshop }: Props): JSX.Element => {
   return (
     <section className="w-full bg-[#1b2a3b] py-24 px-6">
       <div className="max-w-[1200px] mx-auto">
@@ -76,7 +79,7 @@ export const CoachingProgramsSection = ({ onOpenBooking }: Props): JSX.Element =
                   {program.description}
                 </p>
                 <button
-                  onClick={onOpenBooking}
+                  onClick={program.type === "workshop" ? onOpenWorkshop : onOpenBooking}
                   className="self-start px-8 py-3 border border-[#c8953d] text-[#c8953d] text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#c8953d] hover:text-white transition-colors duration-200"
                   style={{ fontFamily: "'Raleway', sans-serif" }}
                 >

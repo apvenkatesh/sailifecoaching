@@ -6,6 +6,9 @@ import {
   type InsertAppointment,
   type User,
   type InsertUser,
+  workshopSignups,
+  type WorkshopSignup,
+  type InsertWorkshopSignup,
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 
@@ -20,11 +23,19 @@ export interface IStorage {
   getBookedSlotsForDate(date: string): Promise<string[]>;
   updateAppointmentSlot(id: string, date: string, timeSlot: string): Promise<Appointment | undefined>;
   cancelAppointment(id: string): Promise<Appointment | undefined>;
+  // Workshop signups
+  createWorkshopSignup(data: InsertWorkshopSignup): Promise<WorkshopSignup>;
+  getWorkshopSignupsByEmail(email: string): Promise<WorkshopSignup[]>;
+  getActiveSignupCountByWorkshop(workshopId: string): Promise<number>;
+  cancelWorkshopSignup(id: string): Promise<WorkshopSignup | undefined>;
+  getWorkshopSignupById(id: string): Promise<WorkshopSignup | undefined>;
+  getActiveSignupByWorkshopAndEmail(workshopId: string, email: string): Promise<WorkshopSignup | undefined>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<string, User> = new Map();
   private appts: Map<string, Appointment> = new Map();
+  private wsSignups: Map<string, WorkshopSignup> = new Map();
 
   async getUser(id: string) { return this.users.get(id); }
   async getUserByUsername(username: string) {
@@ -65,6 +76,28 @@ export class MemStorage implements IStorage {
     const updated = { ...a, status: "cancelled" };
     this.appts.set(id, updated);
     return updated;
+  }
+  async createWorkshopSignup(data: InsertWorkshopSignup): Promise<WorkshopSignup> {
+    const s: WorkshopSignup = { id: randomUUID(), status: "active", createdAt: new Date().toISOString(), ...data };
+    this.wsSignups.set(s.id, s);
+    return s;
+  }
+  async getWorkshopSignupsByEmail(email: string) {
+    return Array.from(this.wsSignups.values()).filter(s => s.email.toLowerCase() === email.toLowerCase() && s.status === "active");
+  }
+  async getActiveSignupCountByWorkshop(workshopId: string) {
+    return Array.from(this.wsSignups.values()).filter(s => s.workshopId === workshopId && s.status === "active").length;
+  }
+  async cancelWorkshopSignup(id: string) {
+    const s = this.wsSignups.get(id);
+    if (!s) return undefined;
+    const updated = { ...s, status: "cancelled" };
+    this.wsSignups.set(id, updated);
+    return updated;
+  }
+  async getWorkshopSignupById(id: string) { return this.wsSignups.get(id); }
+  async getActiveSignupByWorkshopAndEmail(workshopId: string, email: string) {
+    return Array.from(this.wsSignups.values()).find(s => s.workshopId === workshopId && s.email.toLowerCase() === email.toLowerCase() && s.status === "active");
   }
 }
 
@@ -127,6 +160,39 @@ export class DbStorage implements IStorage {
       .where(eq(appointments.id, id))
       .returning();
     return a;
+  }
+
+  async createWorkshopSignup(data: InsertWorkshopSignup): Promise<WorkshopSignup> {
+    const [s] = await db.insert(workshopSignups).values(data).returning();
+    return s;
+  }
+
+  async getWorkshopSignupsByEmail(email: string): Promise<WorkshopSignup[]> {
+    return db.select().from(workshopSignups)
+      .where(and(eq(workshopSignups.email, email.toLowerCase()), eq(workshopSignups.status, "active")));
+  }
+
+  async getActiveSignupCountByWorkshop(workshopId: string): Promise<number> {
+    const rows = await db.select().from(workshopSignups)
+      .where(and(eq(workshopSignups.workshopId, workshopId), eq(workshopSignups.status, "active")));
+    return rows.length;
+  }
+
+  async cancelWorkshopSignup(id: string): Promise<WorkshopSignup | undefined> {
+    const [s] = await db.update(workshopSignups).set({ status: "cancelled" })
+      .where(eq(workshopSignups.id, id)).returning();
+    return s;
+  }
+
+  async getWorkshopSignupById(id: string): Promise<WorkshopSignup | undefined> {
+    const [s] = await db.select().from(workshopSignups).where(eq(workshopSignups.id, id));
+    return s;
+  }
+
+  async getActiveSignupByWorkshopAndEmail(workshopId: string, email: string): Promise<WorkshopSignup | undefined> {
+    const [s] = await db.select().from(workshopSignups)
+      .where(and(eq(workshopSignups.workshopId, workshopId), eq(workshopSignups.email, email.toLowerCase()), eq(workshopSignups.status, "active")));
+    return s;
   }
 }
 
