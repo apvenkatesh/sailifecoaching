@@ -105,22 +105,28 @@ function Calendar({
   );
 }
 
-function TimeSlotPicker({ selected, onSelect, error }: {
-  selected: string; onSelect: (s: string) => void; error?: string;
+function TimeSlotPicker({ selected, onSelect, error, bookedSlots = [] }: {
+  selected: string; onSelect: (s: string) => void; error?: string; bookedSlots?: string[];
 }) {
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {TIME_SLOTS.map(slot => (
-          <button key={slot} onClick={() => onSelect(slot)}
-            className={`border px-3 py-4 text-sm font-medium text-center transition-all ${
-              selected === slot
-                ? "border-[#c8953d] bg-[#c8953d]/10 text-[#1b2a3b] font-bold"
-                : "border-gray-200 text-[#555] hover:border-[#c8953d]/50"
-            }`}>
-            {slot}
-          </button>
-        ))}
+        {TIME_SLOTS.map(slot => {
+          const booked = bookedSlots.includes(slot);
+          return (
+            <button key={slot} onClick={() => !booked && onSelect(slot)} disabled={booked}
+              className={`border px-3 py-4 text-sm font-medium text-center transition-all ${
+                booked
+                  ? "border-gray-100 bg-gray-50 text-gray-300 cursor-not-allowed line-through"
+                  : selected === slot
+                    ? "border-[#c8953d] bg-[#c8953d]/10 text-[#1b2a3b] font-bold"
+                    : "border-gray-200 text-[#555] hover:border-[#c8953d]/50"
+              }`}>
+              {slot}
+              {booked && <span className="block text-[10px] mt-0.5 no-underline" style={{ textDecoration: "none" }}>Unavailable</span>}
+            </button>
+          );
+        })}
       </div>
       {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
     </div>
@@ -184,6 +190,7 @@ export const BookingModal = ({ isOpen, onClose }: Props) => {
   });
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [calMonth, setCalMonth] = useState(new Date());
+  const [bookBookedSlots, setBookBookedSlots] = useState<string[]>([]);
   const [bookErrors, setBookErrors] = useState<Partial<Record<keyof BookFormState | "date", string>>>({});
   const [bookSubmitting, setBookSubmitting] = useState(false);
   const [bookDone, setBookDone] = useState(false);
@@ -200,10 +207,22 @@ export const BookingModal = ({ isOpen, onClose }: Props) => {
   const [resDate, setResDate] = useState<Date | null>(null);
   const [resCalMonth, setResCalMonth] = useState(new Date());
   const [resTimeSlot, setResTimeSlot] = useState("");
+  const [resBookedSlots, setResBookedSlots] = useState<string[]>([]);
   const [resErrors, setResErrors] = useState<{ date?: string; timeSlot?: string }>({});
   const [resSubmitting, setResSubmitting] = useState(false);
   const [resApiError, setResApiError] = useState("");
   const [cancelSubmitting, setCancelSubmitting] = useState(false);
+
+  const fetchBookedSlots = async (date: Date): Promise<string[]> => {
+    try {
+      const dateStr = format(date, "MMMM d, yyyy");
+      const res = await fetch(`/api/slots?date=${encodeURIComponent(dateStr)}`);
+      const data = await res.json();
+      return data.booked ?? [];
+    } catch {
+      return [];
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -427,7 +446,13 @@ export const BookingModal = ({ isOpen, onClose }: Props) => {
               <div>
                 <SectionHeading>3. Select Date</SectionHeading>
                 <p className="text-xs text-[#888] mb-3">Monday – Friday · Up to 2 months ahead</p>
-                <Calendar selected={selectedDate} onSelect={d => { setSelectedDate(d); setBookErrors(e => ({ ...e, date: undefined })); }}
+                <Calendar selected={selectedDate} onSelect={async d => {
+                    setSelectedDate(d);
+                    setF("timeSlot", "");
+                    setBookErrors(e => ({ ...e, date: undefined }));
+                    const booked = await fetchBookedSlots(d);
+                    setBookBookedSlots(booked);
+                  }}
                   calendarMonth={calMonth} setCalendarMonth={setCalMonth} />
                 {bookErrors.date && <p className={errCls}>{bookErrors.date}</p>}
                 {selectedDate && (
@@ -440,7 +465,7 @@ export const BookingModal = ({ isOpen, onClose }: Props) => {
               {/* Time */}
               <div>
                 <SectionHeading>4. Select Time</SectionHeading>
-                <TimeSlotPicker selected={form.timeSlot} onSelect={v => setF("timeSlot", v)} error={bookErrors.timeSlot} />
+                <TimeSlotPicker selected={form.timeSlot} onSelect={v => setF("timeSlot", v)} error={bookErrors.timeSlot} bookedSlots={bookBookedSlots} />
               </div>
 
               {/* Referral */}
@@ -552,7 +577,14 @@ export const BookingModal = ({ isOpen, onClose }: Props) => {
                   <p className="text-xs font-bold tracking-wider uppercase text-[#1b2a3b] mb-2">
                     New Date <span className="text-[#888] font-normal normal-case tracking-normal">(Monday – Friday)</span>
                   </p>
-                  <Calendar selected={resDate} onSelect={d => { setResDate(d); setResErrors(e => ({ ...e, date: undefined })); }}
+                  <Calendar selected={resDate} onSelect={async d => {
+                      setResDate(d);
+                      setResTimeSlot("");
+                      setResErrors(e => ({ ...e, date: undefined }));
+                      const booked = await fetchBookedSlots(d);
+                      // Exclude the current appointment's own slot so it's still selectable
+                      setResBookedSlots(booked.filter(s => s !== activeAppt?.timeSlot || d.toDateString() !== new Date(activeAppt?.date ?? "").toDateString()));
+                    }}
                     calendarMonth={resCalMonth} setCalendarMonth={setResCalMonth} />
                   {resErrors.date && <p className={errCls}>{resErrors.date}</p>}
                   {resDate && (
@@ -564,7 +596,7 @@ export const BookingModal = ({ isOpen, onClose }: Props) => {
 
                 <div>
                   <p className="text-xs font-bold tracking-wider uppercase text-[#1b2a3b] mb-3">New Time Slot</p>
-                  <TimeSlotPicker selected={resTimeSlot} onSelect={v => { setResTimeSlot(v); setResErrors(e => ({ ...e, timeSlot: undefined })); }} error={resErrors.timeSlot} />
+                  <TimeSlotPicker selected={resTimeSlot} onSelect={v => { setResTimeSlot(v); setResErrors(e => ({ ...e, timeSlot: undefined })); }} error={resErrors.timeSlot} bookedSlots={resBookedSlots} />
                 </div>
 
                 {resApiError && (

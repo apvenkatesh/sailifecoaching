@@ -220,6 +220,14 @@ function validateAppointmentDate(dateStr: string): string | null {
 /* ─── Routes ─────────────────────────────────────────────────────── */
 export async function registerRoutes(httpServer: Server, app: Express): Promise<Server> {
 
+  // Get booked slots for a date
+  app.get("/api/slots", async (req, res) => {
+    const date = req.query.date as string;
+    if (!date) return res.status(400).json({ error: "date required" });
+    const booked = await storage.getBookedSlotsForDate(date);
+    return res.json({ booked });
+  });
+
   // Book appointment
   app.post("/api/book-appointment", async (req, res) => {
     try {

@@ -17,6 +17,7 @@ export interface IStorage {
   getAppointmentsByEmail(email: string): Promise<Appointment[]>;
   getAppointmentById(id: string): Promise<Appointment | undefined>;
   getActiveAppointmentBySlot(date: string, timeSlot: string): Promise<Appointment | undefined>;
+  getBookedSlotsForDate(date: string): Promise<string[]>;
   updateAppointmentSlot(id: string, date: string, timeSlot: string): Promise<Appointment | undefined>;
   cancelAppointment(id: string): Promise<Appointment | undefined>;
 }
@@ -45,6 +46,11 @@ export class MemStorage implements IStorage {
   async getAppointmentById(id: string) { return this.appts.get(id); }
   async getActiveAppointmentBySlot(date: string, timeSlot: string) {
     return Array.from(this.appts.values()).find(a => a.date === date && a.timeSlot === timeSlot && a.status === "active");
+  }
+  async getBookedSlotsForDate(date: string): Promise<string[]> {
+    return Array.from(this.appts.values())
+      .filter(a => a.date === date && a.status === "active")
+      .map(a => a.timeSlot);
   }
   async updateAppointmentSlot(id: string, date: string, timeSlot: string) {
     const a = this.appts.get(id);
@@ -95,6 +101,14 @@ export class DbStorage implements IStorage {
       .from(appointments)
       .where(and(eq(appointments.date, date), eq(appointments.timeSlot, timeSlot), eq(appointments.status, "active")));
     return a;
+  }
+
+  async getBookedSlotsForDate(date: string): Promise<string[]> {
+    const rows = await db
+      .select({ timeSlot: appointments.timeSlot })
+      .from(appointments)
+      .where(and(eq(appointments.date, date), eq(appointments.status, "active")));
+    return rows.map(r => r.timeSlot);
   }
 
   async updateAppointmentSlot(id: string, date: string, timeSlot: string): Promise<Appointment | undefined> {
