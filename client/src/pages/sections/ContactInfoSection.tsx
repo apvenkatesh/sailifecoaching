@@ -77,7 +77,7 @@ export const ContactInfoSection = (): JSX.Element => {
           </a>
 
           <a
-            href="https://instagram.com/sp.lifecoach"
+            href="https://instagram.com/sailifecoaching"
             target="_blank"
             rel="noopener noreferrer"
             className="flex flex-col items-center gap-4 p-8 border border-white/20 hover:border-[#c8953d]/70 transition-colors duration-300 group"
@@ -98,7 +98,7 @@ export const ContactInfoSection = (): JSX.Element => {
                 className="text-white text-sm font-bold"
                 style={{ fontFamily: "'Raleway', sans-serif" }}
               >
-                @sp.lifecoach
+                @sailifecoaching
               </p>
             </div>
           </a>
