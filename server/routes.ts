@@ -209,6 +209,7 @@ function validateAppointmentDate(dateStr: string): string | null {
 
 /* ─── Routes ─────────────────────────────────────────────────────── */
 export async function registerRoutes(httpServer: Server, app: Express): Promise<Server> {
+  console.log("[Email] RESEND_API_KEY present:", !!process.env.RESEND_API_KEY);
 
   // Book appointment
   app.post("/api/book-appointment", async (req, res) => {
