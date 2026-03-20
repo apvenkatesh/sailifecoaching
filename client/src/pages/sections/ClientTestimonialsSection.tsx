@@ -3,7 +3,7 @@ import { Quote } from "lucide-react";
 const testimonials = [
   {
     role: "Client",
-    text: "Working with my coach has been a life changing experience for me. Her guidance in my emotional wellness has helped me to understand myself better, also she helped me to gain confidence to handle my life's ups and down. Through her support, i have gained lots of self confidence to learn and handle my problems in a better way.\n\nI truly feel like I'm working towards a better version of myself, more balanced and more positive to handle problems with a right mindset. If your looking for someone who genuinely cares and help you achieve in your life for emotional growth. I highly recommend her.",
+    text: "Working with my coach has been a life changing experience for me. Her guidance in my emotional wellness has helped me to understand myself better, also she helped me to gain confidence to handle my life's ups and down. Through her support, I have gained lots of self confidence to learn and handle my problems in a better way.\n\nI truly feel like I'm working towards a better version of myself, more balanced and more positive to handle problems with a right mindset. If your looking for someone who genuinely cares and help you achieve in your life for emotional growth. I highly recommend her.",
   },
   {
     role: "Client",
@@ -11,7 +11,7 @@ const testimonials = [
   },
   {
     role: "Client",
-    text: "My experience with meditation and healing has been great. Iam glad with the postive results so far. In this, I realized the negativity i stored in myself for the past years.\n\nThank you for your support. You are friendly and I felt so comfortable talking with you. I feel more relaxing now a days and so much positivity around me.\n\nThank you so much to the gift of healing you gave to me ❤️❤️",
+    text: "My experience with meditation and healing has been great. I am glad with the postive results so far. In this, I realized the negativity I stored in myself for the past years.\n\nThank you for your support. You are friendly and I felt so comfortable talking with you. I feel more relaxing now a days and so much positivity around me.\n\nThank you so much to the gift of healing you gave to me ❤️❤️",
   },
 ];
 
