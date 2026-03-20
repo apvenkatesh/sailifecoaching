@@ -31,11 +31,6 @@ const inputCls = "w-full border border-gray-200 px-4 py-3 text-sm text-[#1b2a3b]
 const labelCls = "block text-xs font-bold tracking-wider uppercase text-[#1b2a3b] mb-1";
 const errCls = "text-red-500 text-xs mt-1";
 
-function toEmbedUrl(url: string): string {
-  const gdocMatch = url.match(/docs\.google\.com\/document\/d\/([^/]+)/);
-  if (gdocMatch) return `https://docs.google.com/document/d/${gdocMatch[1]}/pub?embedded=true`;
-  return url;
-}
 
 type Tab = "details" | "signup" | "cancel";
 
@@ -49,7 +44,6 @@ export const WorkshopModal = ({ isOpen, onClose }: Props) => {
 
   /* ── Details tab state ── */
   const [selectedDetail, setSelectedDetail] = useState<Workshop | null>(null);
-  const [iframeError, setIframeError] = useState(false);
 
   /* ── Signup state ── */
   const [selectedWorkshop, setSelectedWorkshop] = useState<Workshop | null>(null);
@@ -172,7 +166,6 @@ export const WorkshopModal = ({ isOpen, onClose }: Props) => {
     setTab("details");
     setWorkshops(null);
     setSelectedDetail(null);
-    setIframeError(false);
     setSelectedWorkshop(null);
     setForm({ firstName: "", lastName: "", phone: "", email: "" });
     setFormErrors({});
@@ -249,7 +242,7 @@ export const WorkshopModal = ({ isOpen, onClose }: Props) => {
                   {workshops.length > 1 && (
                     <div className="flex gap-2 flex-wrap">
                       {workshops.map(w => (
-                        <button key={w.id} onClick={() => { setSelectedDetail(w); setIframeError(false); }}
+                        <button key={w.id} onClick={() => setSelectedDetail(w)}
                           className={`px-5 py-2 text-xs font-bold tracking-wider uppercase border transition-colors ${
                             selectedDetail?.id === w.id
                               ? "border-[#c8953d] bg-[#c8953d] text-white"
@@ -287,38 +280,22 @@ export const WorkshopModal = ({ isOpen, onClose }: Props) => {
                         </div>
                       )}
 
-                      {/* Details link content */}
-                      {selectedDetail.detailsUrl && !iframeError && (
-                        <div className="border border-gray-200">
-                          <div className="bg-gray-50 px-4 py-2 flex items-center justify-between border-b border-gray-200">
-                            <span className="text-xs font-bold tracking-wider uppercase text-[#1b2a3b]" style={{ fontFamily: "'Raleway', sans-serif" }}>
-                              Workshop Details
-                            </span>
-                            <a href={selectedDetail.detailsUrl} target="_blank" rel="noopener noreferrer"
-                              className="flex items-center gap-1 text-xs text-[#c8953d] font-bold hover:underline">
-                              <ExternalLink size={12} /> Open
-                            </a>
+                      {/* Description / full details link */}
+                      {selectedDetail.detailsUrl && (
+                        <a
+                          href={selectedDetail.detailsUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 px-6 py-4 border border-[#c8953d] text-[#1b2a3b] hover:bg-[#c8953d] hover:text-white transition-colors group w-full"
+                        >
+                          <ExternalLink size={16} className="text-[#c8953d] group-hover:text-white flex-shrink-0" />
+                          <div>
+                            <p className="text-xs font-bold tracking-wider uppercase" style={{ fontFamily: "'Raleway', sans-serif" }}>
+                              View Full Workshop Details
+                            </p>
+                            <p className="text-xs opacity-60 mt-0.5">Opens in a new tab</p>
                           </div>
-                          <iframe
-                            src={toEmbedUrl(selectedDetail.detailsUrl)}
-                            className="w-full"
-                            style={{ height: "360px", border: "none" }}
-                            onError={() => setIframeError(true)}
-                            title={`${selectedDetail.title} details`}
-                          />
-                        </div>
-                      )}
-
-                      {selectedDetail.detailsUrl && iframeError && (
-                        <a href={selectedDetail.detailsUrl} target="_blank" rel="noopener noreferrer"
-                          className="flex items-center gap-2 px-6 py-3 border border-[#c8953d] text-[#c8953d] text-xs font-bold tracking-wider uppercase hover:bg-[#c8953d] hover:text-white transition-colors w-fit"
-                          style={{ fontFamily: "'Raleway', sans-serif" }}>
-                          <ExternalLink size={14} /> View Full Details
                         </a>
-                      )}
-
-                      {!selectedDetail.detailsUrl && (
-                        <p className="text-sm text-gray-500 italic">Full details coming soon.</p>
                       )}
 
                       {/* Slots info */}

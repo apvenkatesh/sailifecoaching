@@ -3,7 +3,7 @@ import { google } from "googleapis";
 // Google Sheets integration via Replit connector
 let connectionSettings: any;
 
-async function getAccessToken(): Promise<string> {
+export async function getAccessToken(): Promise<string> {
   if (
     connectionSettings?.settings?.expires_at &&
     new Date(connectionSettings.settings.expires_at).getTime() > Date.now()

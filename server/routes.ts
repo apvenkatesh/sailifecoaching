@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertAppointmentSchema, insertWorkshopSignupSchema, type Appointment, type WorkshopSignup } from "@shared/schema";
-import { fetchWorkshopsFromSheet, type WorkshopRow } from "./googleSheets";
+import { fetchWorkshopsFromSheet, getAccessToken, type WorkshopRow } from "./googleSheets";
 import nodemailer from "nodemailer";
 import { addMonths, isBefore, isAfter, startOfDay, parse as dateParse } from "date-fns";
 
@@ -383,6 +383,31 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   }
 
   /* ── Workshop routes ─────────────────────────────────────────── */
+
+  // Proxy a Google Doc as HTML (for embedding doc content in the modal)
+  app.get("/api/workshop-doc", async (req, res) => {
+    const docUrl = req.query.url as string;
+    if (!docUrl) return res.status(400).json({ error: "Missing url" });
+    const match = docUrl.match(/docs\.google\.com\/document\/d\/([^/?]+)/);
+    if (!match) return res.status(400).json({ error: "Not a Google Docs URL" });
+    const docId = match[1];
+    try {
+      const token = await getAccessToken();
+      const exportUrl = `https://docs.google.com/document/d/${docId}/export?format=html`;
+      const docRes = await fetch(exportUrl, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!docRes.ok) {
+        return res.status(docRes.status).json({ error: `Doc fetch failed: ${docRes.status}` });
+      }
+      const html = await docRes.text();
+      res.setHeader("Content-Type", "text/html; charset=utf-8");
+      return res.send(html);
+    } catch (err) {
+      console.error("/api/workshop-doc GET:", err);
+      return res.status(500).json({ error: "Failed to fetch document" });
+    }
+  });
 
   // List workshops with available slots
   app.get("/api/workshops", async (_req, res) => {
