@@ -2,15 +2,19 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertAppointmentSchema, type Appointment } from "@shared/schema";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { addMonths, isBefore, isAfter, startOfDay, parse as dateParse } from "date-fns";
 
 const COACH_EMAIL = "meetcoachsp@gmail.com";
+const GMAIL_USER = "meetcoachsp@gmail.com";
 
-function getResend() {
-  const key = process.env.RESEND_API_KEY;
-  if (!key) return null;
-  return new Resend(key);
+function getTransporter() {
+  const pass = process.env.GMAIL_APP_PASSWORD;
+  if (!pass) { console.log("[Email] No GMAIL_APP_PASSWORD — skipping"); return null; }
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: { user: GMAIL_USER, pass },
+  });
 }
 
 function formatType(type: string) {
@@ -98,16 +102,22 @@ async function sendEmail(opts: {
   icsMethod: "REQUEST" | "CANCEL";
   appt: Appointment;
 }) {
-  const resend = getResend();
-  if (!resend) { console.log("[Email] No RESEND_API_KEY — skipping"); return; }
+  const transporter = getTransporter();
+  if (!transporter) return;
+  const ics = icsAttachment(opts.appt, opts.icsMethod);
   try {
-    await resend.emails.send({
-      from: "Sai Life Coaching <onboarding@resend.dev>",
+    await transporter.sendMail({
+      from: `"Sai Life Coaching" <${GMAIL_USER}>`,
       to: opts.to,
       subject: opts.subject,
       html: opts.html,
-      attachments: [icsAttachment(opts.appt, opts.icsMethod)],
+      attachments: [{
+        filename: ics.filename,
+        content: Buffer.from(ics.content as string, "base64"),
+        contentType: "text/calendar; method=" + opts.icsMethod,
+      }],
     });
+    console.log(`[Email] Sent to ${opts.to}: ${opts.subject}`);
   } catch (err) {
     console.error("[Email] send failed:", err);
   }
