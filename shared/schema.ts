@@ -27,12 +27,14 @@ export const appointments = pgTable("appointments", {
   date: text("date").notNull(),
   timeSlot: text("time_slot").notNull(),
   hearAboutUs: text("hear_about_us"),
+  status: text("status").notNull().default("active"),
   createdAt: text("created_at").default(sql`now()`),
 });
 
 export const insertAppointmentSchema = createInsertSchema(appointments).omit({
   id: true,
   createdAt: true,
+  status: true,
 });
 
 export type InsertAppointment = z.infer<typeof insertAppointmentSchema>;
