@@ -35,8 +35,8 @@ All Figma assets in `client/public/figmaAssets/`:
 - `pictures.png` — Gallery strip
 
 ## Contact Info
-- Phone: (925)-922-9980
-- Email: saishree99@gmail.com
+- Phone: (925)-367-1585
+- Email: meetcoachsp@gmail.com
 - Instagram: @sp.lifecoach
 - Coach email for bookings: meetcoachsp@gmail.com
 

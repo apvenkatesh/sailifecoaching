@@ -27,7 +27,7 @@ export const ContactInfoSection = (): JSX.Element => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
           <a
-            href="tel:9259229980"
+            href="tel:9253671585"
             className="flex flex-col items-center gap-4 p-8 border border-white/20 hover:border-[#c8953d]/70 transition-colors duration-300 group"
           >
             <img
@@ -46,13 +46,13 @@ export const ContactInfoSection = (): JSX.Element => {
                 className="text-white text-sm font-bold"
                 style={{ fontFamily: "'Raleway', sans-serif" }}
               >
-                (925)-922-9980
+                (925)-367-1585
               </p>
             </div>
           </a>
 
           <a
-            href="mailto:saishree99@gmail.com"
+            href="mailto:meetcoachsp@gmail.com"
             className="flex flex-col items-center gap-4 p-8 border border-white/20 hover:border-[#c8953d]/70 transition-colors duration-300 group"
           >
             <img
@@ -71,7 +71,7 @@ export const ContactInfoSection = (): JSX.Element => {
                 className="text-white text-sm font-bold"
                 style={{ fontFamily: "'Raleway', sans-serif" }}
               >
-                saishree99@gmail.com
+                meetcoachsp@gmail.com
               </p>
             </div>
           </a>
