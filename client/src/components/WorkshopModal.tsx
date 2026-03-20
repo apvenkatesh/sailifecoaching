@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { X, Users, CheckCircle, Loader2, Search, AlertTriangle, ExternalLink } from "lucide-react";
+import { X, Users, CheckCircle, Loader2, Search, AlertTriangle } from "lucide-react";
 
 interface Workshop {
   id: string;
   title: string;
-  detailsUrl: string;
+  description: string;
   sessions: string[];
   totalSlots: number;
   signedUp: number;
@@ -280,22 +280,16 @@ export const WorkshopModal = ({ isOpen, onClose }: Props) => {
                         </div>
                       )}
 
-                      {/* Description / full details link */}
-                      {selectedDetail.detailsUrl && (
-                        <a
-                          href={selectedDetail.detailsUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-3 px-6 py-4 border border-[#c8953d] text-[#1b2a3b] hover:bg-[#c8953d] hover:text-white transition-colors group w-full"
-                        >
-                          <ExternalLink size={16} className="text-[#c8953d] group-hover:text-white flex-shrink-0" />
-                          <div>
-                            <p className="text-xs font-bold tracking-wider uppercase" style={{ fontFamily: "'Raleway', sans-serif" }}>
-                              View Full Workshop Details
-                            </p>
-                            <p className="text-xs opacity-60 mt-0.5">Opens in a new tab</p>
+                      {/* Program description */}
+                      {selectedDetail.description && (
+                        <div className="border-t border-gray-100 pt-6">
+                          <p className="text-xs font-bold tracking-wider uppercase text-[#1b2a3b] mb-3" style={{ fontFamily: "'Raleway', sans-serif" }}>
+                            About This Program
+                          </p>
+                          <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line max-h-72 overflow-y-auto pr-1">
+                            {selectedDetail.description}
                           </div>
-                        </a>
+                        </div>
                       )}
 
                       {/* Slots info */}

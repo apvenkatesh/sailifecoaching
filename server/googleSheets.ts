@@ -42,37 +42,42 @@ export const WORKSHOP_SHEET_ID = "1ORwSswA1d0e9KitnLzfcLIT3IOayvhfXeIDAHl5wM5A";
 export interface WorkshopRow {
   id: string;
   title: string;
-  detailsUrl: string;
+  description: string;
   sessions: string[];
   totalSlots: number;
 }
 
 export async function fetchWorkshopsFromSheet(): Promise<WorkshopRow[]> {
   const sheets = await getGoogleSheetsClient();
-  const meta = await sheets.spreadsheets.get({
-    spreadsheetId: WORKSHOP_SHEET_ID,
-    includeGridData: true,
-  });
 
-  const firstSheet = meta.data.sheets?.[0];
-  const gridData = firstSheet?.data?.[0];
-  if (!gridData?.rowData || gridData.rowData.length < 2) return [];
+  // Read both tabs in parallel
+  const [workshopsRes, descRes] = await Promise.all([
+    sheets.spreadsheets.values.get({
+      spreadsheetId: WORKSHOP_SHEET_ID,
+      range: "Workshops",
+    }),
+    sheets.spreadsheets.values.get({
+      spreadsheetId: WORKSHOP_SHEET_ID,
+      range: "Description",
+    }),
+  ]);
 
-  const headerRow = gridData.rowData[0]?.values || [];
-  const headers = headerRow.map((cell: any) =>
-    (cell.formattedValue || "").trim().toLowerCase()
-  );
+  const rows = workshopsRes.data.values;
+  if (!rows || rows.length < 2) return [];
+
+  // Parse description tab — each row corresponds to the workshop at that index;
+  // if only one row exists it is shared across all workshops
+  const descRows = descRes.data.values || [];
+  const getDesc = (i: number): string => {
+    const row = descRows[i] ?? descRows[0];
+    return row?.[0]?.trim() || "";
+  };
+
+  const headers = rows[0].map((h: string) => h.trim().toLowerCase());
   const col = (name: string) => headers.indexOf(name);
 
-  return gridData.rowData.slice(1).map((row: any, i: number) => {
-    const cells = row.values || [];
-    const getVal = (idx: number): string =>
-      idx >= 0 ? cells[idx]?.formattedValue || "" : "";
-    const getLink = (idx: number): string => {
-      if (idx < 0) return "";
-      const cell = cells[idx];
-      return cell?.hyperlink || cell?.textFormatRuns?.[0]?.format?.link?.uri || "";
-    };
+  return rows.slice(1).map((row: string[], i: number) => {
+    const getVal = (idx: number): string => (idx >= 0 ? row[idx] || "" : "");
 
     const sessions: string[] = [];
     for (let s = 1; s <= 6; s++) {
@@ -81,13 +86,10 @@ export async function fetchWorkshopsFromSheet(): Promise<WorkshopRow[]> {
       if (sv) sessions.push(sv);
     }
 
-    const descIdx = col("description");
-    const detailsUrl = getLink(descIdx);
-
     return {
       id: String(i + 1),
       title: getVal(col("name")) || getVal(0) || "",
-      detailsUrl,
+      description: getDesc(i),
       sessions,
       totalSlots: parseInt(getVal(col("slots")) || "0", 10),
     };

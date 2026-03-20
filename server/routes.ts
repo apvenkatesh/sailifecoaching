@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertAppointmentSchema, insertWorkshopSignupSchema, type Appointment, type WorkshopSignup } from "@shared/schema";
-import { fetchWorkshopsFromSheet, getAccessToken, type WorkshopRow } from "./googleSheets";
+import { fetchWorkshopsFromSheet, type WorkshopRow } from "./googleSheets";
 import nodemailer from "nodemailer";
 import { addMonths, isBefore, isAfter, startOfDay, parse as dateParse } from "date-fns";
 
@@ -342,11 +342,18 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       <tr><td style="padding:8px;font-weight:bold;color:#555;">Workshop</td><td style="padding:8px;">${workshop.title}</td></tr>
       ${sessionsHtml}
     </table>`;
+    const descriptionHtml = workshop.description
+      ? `<div style="margin:16px 0;padding:16px;background:#f5f4f0;border-left:4px solid #c8953d;">
+          <p style="font-weight:bold;color:#1b2a3b;margin:0 0 8px 0;font-size:13px;">About This Program</p>
+          <p style="color:#555;font-size:13px;line-height:1.6;margin:0;white-space:pre-line;">${workshop.description}</p>
+        </div>`
+      : "";
     const customerHtml = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
       <h2 style="color:#1b2a3b;">You're Signed Up!</h2>
       <p>Hi ${signup.firstName},</p>
       <p>Thank you for signing up for our group workshop. Here are your details:</p>
       ${details}
+      ${descriptionHtml}
       <p style="background:#f5f4f0;padding:16px;border-left:4px solid #c8953d;">We'll send you joining instructions closer to the date. Looking forward to seeing you there!</p>
       <p style="color:#888;font-size:12px;">Sai Life Coaching · Coach Shanmuga Priya</p>
     </div>`;
@@ -383,31 +390,6 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   }
 
   /* ── Workshop routes ─────────────────────────────────────────── */
-
-  // Proxy a Google Doc as HTML (for embedding doc content in the modal)
-  app.get("/api/workshop-doc", async (req, res) => {
-    const docUrl = req.query.url as string;
-    if (!docUrl) return res.status(400).json({ error: "Missing url" });
-    const match = docUrl.match(/docs\.google\.com\/document\/d\/([^/?]+)/);
-    if (!match) return res.status(400).json({ error: "Not a Google Docs URL" });
-    const docId = match[1];
-    try {
-      const token = await getAccessToken();
-      const exportUrl = `https://docs.google.com/document/d/${docId}/export?format=html`;
-      const docRes = await fetch(exportUrl, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!docRes.ok) {
-        return res.status(docRes.status).json({ error: `Doc fetch failed: ${docRes.status}` });
-      }
-      const html = await docRes.text();
-      res.setHeader("Content-Type", "text/html; charset=utf-8");
-      return res.send(html);
-    } catch (err) {
-      console.error("/api/workshop-doc GET:", err);
-      return res.status(500).json({ error: "Failed to fetch document" });
-    }
-  });
 
   // List workshops with available slots
   app.get("/api/workshops", async (_req, res) => {
