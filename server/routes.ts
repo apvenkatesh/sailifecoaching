@@ -330,10 +330,17 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
   }
 
   async function sendWorkshopSignupEmails(signup: WorkshopSignup, workshop: WorkshopRow) {
+    const sessionsHtml = workshop.sessions.length
+      ? workshop.sessions
+          .map(
+            (s, i) =>
+              `<tr${i % 2 === 1 ? ' style="background:#f9f9f9"' : ""}><td style="padding:8px;font-weight:bold;color:#555;white-space:nowrap;">Session ${i + 1}</td><td style="padding:8px;">${s}</td></tr>`
+          )
+          .join("")
+      : `<tr><td colspan="2" style="padding:8px;color:#888;">Sessions to be announced</td></tr>`;
     const details = `<table style="width:100%;border-collapse:collapse;margin:16px 0;">
       <tr><td style="padding:8px;font-weight:bold;color:#555;">Workshop</td><td style="padding:8px;">${workshop.title}</td></tr>
-      <tr style="background:#f9f9f9"><td style="padding:8px;font-weight:bold;color:#555;">Date</td><td style="padding:8px;">${workshop.date}</td></tr>
-      <tr><td style="padding:8px;font-weight:bold;color:#555;">Time</td><td style="padding:8px;">${workshop.time}</td></tr>
+      ${sessionsHtml}
     </table>`;
     const customerHtml = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
       <h2 style="color:#1b2a3b;">You're Signed Up!</h2>
@@ -343,18 +350,22 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       <p style="background:#f5f4f0;padding:16px;border-left:4px solid #c8953d;">We'll send you joining instructions closer to the date. Looking forward to seeing you there!</p>
       <p style="color:#888;font-size:12px;">Sai Life Coaching · Coach Shanmuga Priya</p>
     </div>`;
+    const sessionsSummary = workshop.sessions.length
+      ? workshop.sessions.map((s, i) => `Session ${i + 1}: ${s}`).join("<br/>")
+      : "Sessions TBD";
     const coachHtml = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
       <h2 style="color:#1b2a3b;">New Workshop Signup</h2>
-      <p><strong>${signup.firstName} ${signup.lastName}</strong> (${signup.email}, ${signup.phone}) signed up for <strong>${workshop.title}</strong> on ${workshop.date}.</p>
+      <p><strong>${signup.firstName} ${signup.lastName}</strong> (${signup.email}, ${signup.phone}) signed up for <strong>${workshop.title}</strong>.</p>
+      <p style="font-size:13px;color:#555;">${sessionsSummary}</p>
     </div>`;
     await Promise.allSettled([
-      sendWorkshopEmail(signup.email, `Workshop Confirmed: ${workshop.title} — ${workshop.date}`, customerHtml),
+      sendWorkshopEmail(signup.email, `Workshop Confirmed: ${workshop.title}`, customerHtml),
       sendWorkshopEmail(COACH_EMAIL, `New Workshop Signup: ${signup.firstName} ${signup.lastName} — ${workshop.title}`, coachHtml),
     ]);
   }
 
   async function sendWorkshopCancelEmails(signup: WorkshopSignup, workshop: WorkshopRow | null) {
-    const workshopLabel = workshop ? `${workshop.title} (${workshop.date})` : signup.workshopId;
+    const workshopLabel = workshop ? workshop.title : signup.workshopId;
     const customerHtml = `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
       <h2 style="color:#1b2a3b;">Workshop Registration Cancelled</h2>
       <p>Hi ${signup.firstName},</p>

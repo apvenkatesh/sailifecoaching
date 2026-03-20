@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { X, Users, CheckCircle, Loader2, Search, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
+import { X, Users, CheckCircle, Loader2, Search, AlertTriangle, ExternalLink } from "lucide-react";
 
 interface Workshop {
   id: string;
   title: string;
-  description: string;
-  date: string;
-  time: string;
+  detailsUrl: string;
+  sessions: string[];
   totalSlots: number;
   signedUp: number;
   availableSlots: number;
@@ -16,8 +15,6 @@ interface EnrichedSignup {
   id: string;
   workshopId: string;
   workshopTitle: string;
-  workshopDate: string;
-  workshopTime: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -34,15 +31,28 @@ const inputCls = "w-full border border-gray-200 px-4 py-3 text-sm text-[#1b2a3b]
 const labelCls = "block text-xs font-bold tracking-wider uppercase text-[#1b2a3b] mb-1";
 const errCls = "text-red-500 text-xs mt-1";
 
-export const WorkshopModal = ({ isOpen, onClose }: Props) => {
-  const [tab, setTab] = useState<"signup" | "cancel">("signup");
+function toEmbedUrl(url: string): string {
+  const gdocMatch = url.match(/docs\.google\.com\/document\/d\/([^/]+)/);
+  if (gdocMatch) return `https://docs.google.com/document/d/${gdocMatch[1]}/pub?embedded=true`;
+  return url;
+}
 
-  /* ── Signup state ── */
+type Tab = "details" | "signup" | "cancel";
+
+export const WorkshopModal = ({ isOpen, onClose }: Props) => {
+  const [tab, setTab] = useState<Tab>("details");
+
+  /* ── Workshops state ── */
   const [workshops, setWorkshops] = useState<Workshop[] | null>(null);
   const [loadingWorkshops, setLoadingWorkshops] = useState(false);
   const [workshopsError, setWorkshopsError] = useState("");
+
+  /* ── Details tab state ── */
+  const [selectedDetail, setSelectedDetail] = useState<Workshop | null>(null);
+  const [iframeError, setIframeError] = useState(false);
+
+  /* ── Signup state ── */
   const [selectedWorkshop, setSelectedWorkshop] = useState<Workshop | null>(null);
-  const [expandedDesc, setExpandedDesc] = useState<string | null>(null);
   const [form, setForm] = useState({ firstName: "", lastName: "", phone: "", email: "" });
   const [formErrors, setFormErrors] = useState<Partial<typeof form & { workshop: string }>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -60,7 +70,7 @@ export const WorkshopModal = ({ isOpen, onClose }: Props) => {
 
   if (!isOpen) return null;
 
-  /* ── Fetch workshops ── */
+  /* ── Fetch workshops (shared) ── */
   const loadWorkshops = async () => {
     if (workshops !== null) return;
     setLoadingWorkshops(true);
@@ -70,6 +80,7 @@ export const WorkshopModal = ({ isOpen, onClose }: Props) => {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed");
       setWorkshops(data.workshops);
+      if (data.workshops?.length > 0) setSelectedDetail(data.workshops[0]);
     } catch (e: any) {
       setWorkshopsError(e.message || "Failed to load workshops");
     } finally {
@@ -77,7 +88,7 @@ export const WorkshopModal = ({ isOpen, onClose }: Props) => {
     }
   };
 
-  if (tab === "signup" && workshops === null && !loadingWorkshops && !workshopsError) {
+  if (workshops === null && !loadingWorkshops && !workshopsError) {
     loadWorkshops();
   }
 
@@ -158,8 +169,10 @@ export const WorkshopModal = ({ isOpen, onClose }: Props) => {
   };
 
   const handleClose = () => {
-    setTab("signup");
+    setTab("details");
     setWorkshops(null);
+    setSelectedDetail(null);
+    setIframeError(false);
     setSelectedWorkshop(null);
     setForm({ firstName: "", lastName: "", phone: "", email: "" });
     setFormErrors({});
@@ -172,6 +185,25 @@ export const WorkshopModal = ({ isOpen, onClose }: Props) => {
     setCancelApiError("");
     onClose();
   };
+
+  const tabs: { key: Tab; label: string }[] = [
+    { key: "details", label: "Workshop Details" },
+    { key: "signup", label: "Join Workshop" },
+    { key: "cancel", label: "Cancel Registration" },
+  ];
+
+  const loadingBlock = (
+    <div className="flex items-center gap-3 text-[#1b2a3b] py-10 justify-center">
+      <Loader2 size={18} className="animate-spin" />
+      <span className="text-sm">Loading workshops…</span>
+    </div>
+  );
+  const errorBlock = (
+    <div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 border border-red-200 px-4 py-3">
+      <AlertTriangle size={16} />
+      {workshopsError}
+    </div>
+  );
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60 px-4 py-8">
@@ -191,17 +223,124 @@ export const WorkshopModal = ({ isOpen, onClose }: Props) => {
 
         {/* Tabs */}
         <div className="flex border-b border-gray-200">
-          {(["signup", "cancel"] as const).map(t => (
-            <button key={t} onClick={() => setTab(t)}
+          {tabs.map(t => (
+            <button key={t.key} onClick={() => setTab(t.key)}
               className={`flex-1 py-3 text-xs font-bold tracking-wider uppercase transition-colors ${
-                tab === t ? "border-b-2 border-[#c8953d] text-[#1b2a3b]" : "text-gray-400 hover:text-[#1b2a3b]"
+                tab === t.key ? "border-b-2 border-[#c8953d] text-[#1b2a3b]" : "text-gray-400 hover:text-[#1b2a3b]"
               }`} style={{ fontFamily: "'Raleway', sans-serif" }}>
-              {t === "signup" ? "Join Workshop" : "Cancel Registration"}
+              {t.label}
             </button>
           ))}
         </div>
 
         <div className="px-8 py-8 space-y-8">
+
+          {/* ── DETAILS TAB ── */}
+          {tab === "details" && (
+            <>
+              {loadingWorkshops && loadingBlock}
+              {workshopsError && errorBlock}
+              {workshops && workshops.length === 0 && (
+                <p className="text-sm text-gray-500 italic text-center py-6">No upcoming workshops at this time. Check back soon!</p>
+              )}
+              {workshops && workshops.length > 0 && (
+                <>
+                  {/* Workshop selector (if multiple) */}
+                  {workshops.length > 1 && (
+                    <div className="flex gap-2 flex-wrap">
+                      {workshops.map(w => (
+                        <button key={w.id} onClick={() => { setSelectedDetail(w); setIframeError(false); }}
+                          className={`px-5 py-2 text-xs font-bold tracking-wider uppercase border transition-colors ${
+                            selectedDetail?.id === w.id
+                              ? "border-[#c8953d] bg-[#c8953d] text-white"
+                              : "border-gray-300 text-[#1b2a3b] hover:border-[#c8953d]"
+                          }`} style={{ fontFamily: "'Raleway', sans-serif" }}>
+                          {w.title}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Selected workshop detail */}
+                  {selectedDetail && (
+                    <div>
+                      <h3 className="text-[#1b2a3b] text-base font-bold mb-4" style={{ fontFamily: "'Raleway', sans-serif" }}>
+                        {selectedDetail.title}
+                      </h3>
+
+                      {/* Sessions list */}
+                      {(selectedDetail.sessions?.length ?? 0) > 0 && (
+                        <div className="mb-6">
+                          <p className="text-xs font-bold tracking-wider uppercase text-[#1b2a3b] mb-3" style={{ fontFamily: "'Raleway', sans-serif" }}>
+                            Session Schedule
+                          </p>
+                          <div className="space-y-2">
+                            {selectedDetail.sessions.map((s, i) => (
+                              <div key={i} className="flex gap-4 items-start py-2 border-b border-gray-100 last:border-0">
+                                <span className="text-xs font-bold text-[#c8953d] w-16 flex-shrink-0 pt-0.5" style={{ fontFamily: "'Raleway', sans-serif" }}>
+                                  Session {i + 1}
+                                </span>
+                                <span className="text-sm text-[#1b2a3b]">{s}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Details link content */}
+                      {selectedDetail.detailsUrl && !iframeError && (
+                        <div className="border border-gray-200">
+                          <div className="bg-gray-50 px-4 py-2 flex items-center justify-between border-b border-gray-200">
+                            <span className="text-xs font-bold tracking-wider uppercase text-[#1b2a3b]" style={{ fontFamily: "'Raleway', sans-serif" }}>
+                              Workshop Details
+                            </span>
+                            <a href={selectedDetail.detailsUrl} target="_blank" rel="noopener noreferrer"
+                              className="flex items-center gap-1 text-xs text-[#c8953d] font-bold hover:underline">
+                              <ExternalLink size={12} /> Open
+                            </a>
+                          </div>
+                          <iframe
+                            src={toEmbedUrl(selectedDetail.detailsUrl)}
+                            className="w-full"
+                            style={{ height: "360px", border: "none" }}
+                            onError={() => setIframeError(true)}
+                            title={`${selectedDetail.title} details`}
+                          />
+                        </div>
+                      )}
+
+                      {selectedDetail.detailsUrl && iframeError && (
+                        <a href={selectedDetail.detailsUrl} target="_blank" rel="noopener noreferrer"
+                          className="flex items-center gap-2 px-6 py-3 border border-[#c8953d] text-[#c8953d] text-xs font-bold tracking-wider uppercase hover:bg-[#c8953d] hover:text-white transition-colors w-fit"
+                          style={{ fontFamily: "'Raleway', sans-serif" }}>
+                          <ExternalLink size={14} /> View Full Details
+                        </a>
+                      )}
+
+                      {!selectedDetail.detailsUrl && (
+                        <p className="text-sm text-gray-500 italic">Full details coming soon.</p>
+                      )}
+
+                      {/* Slots info */}
+                      <div className="mt-6 flex items-center gap-2">
+                        <span className={`text-xs font-bold ${selectedDetail.availableSlots === 0 ? "text-red-400" : "text-[#c8953d]"}`}>
+                          {selectedDetail.availableSlots === 0 ? "Fully Booked" : `${selectedDetail.availableSlots} of ${selectedDetail.totalSlots} spots remaining`}
+                        </span>
+                      </div>
+
+                      {selectedDetail.availableSlots > 0 && (
+                        <button onClick={() => { setSelectedWorkshop(selectedDetail); setTab("signup"); }}
+                          className="mt-4 px-8 py-3 bg-[#c8953d] text-white text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#b07e2c] transition-colors"
+                          style={{ fontFamily: "'Raleway', sans-serif" }}>
+                          Join This Workshop
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
+            </>
+          )}
 
           {/* ── SIGNUP TAB ── */}
           {tab === "signup" && !done && (
@@ -213,25 +352,14 @@ export const WorkshopModal = ({ isOpen, onClose }: Props) => {
                   1. Select a Workshop
                 </h3>
 
-                {loadingWorkshops && (
-                  <div className="flex items-center gap-3 text-[#1b2a3b] py-6">
-                    <Loader2 size={18} className="animate-spin" />
-                    <span className="text-sm">Loading workshops…</span>
-                  </div>
-                )}
-                {workshopsError && (
-                  <div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 border border-red-200 px-4 py-3">
-                    <AlertTriangle size={16} />
-                    {workshopsError}
-                  </div>
-                )}
+                {loadingWorkshops && loadingBlock}
+                {workshopsError && errorBlock}
                 {workshops && workshops.length === 0 && (
                   <p className="text-sm text-gray-500 italic">No upcoming workshops at this time. Check back soon!</p>
                 )}
                 {workshops && workshops.map(w => {
                   const full = w.availableSlots === 0;
                   const selected = selectedWorkshop?.id === w.id;
-                  const descExpanded = expandedDesc === w.id;
                   return (
                     <div key={w.id}
                       onClick={() => !full && setSelectedWorkshop(w)}
@@ -242,12 +370,18 @@ export const WorkshopModal = ({ isOpen, onClose }: Props) => {
                       }`}>
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
+                          <div className="flex items-center gap-2 mb-2">
                             <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 mt-0.5 ${selected ? "border-[#c8953d] bg-[#c8953d]" : "border-gray-300"}`} />
                             <p className="font-bold text-[#1b2a3b] text-sm" style={{ fontFamily: "'Raleway', sans-serif" }}>{w.title}</p>
                           </div>
-                          {(w.date || w.time) && (
-                            <p className="text-xs text-[#888] ml-6">{w.date}{w.date && w.time ? " · " : ""}{w.time}</p>
+                          {(w.sessions?.length ?? 0) > 0 && (
+                            <div className="ml-6 space-y-1">
+                              {w.sessions.map((s, i) => (
+                                <p key={i} className="text-xs text-[#666]">
+                                  <span className="font-semibold text-[#c8953d]">Session {i + 1}:</span> {s}
+                                </p>
+                              ))}
+                            </div>
                           )}
                         </div>
                         <div className="text-right flex-shrink-0">
@@ -256,20 +390,6 @@ export const WorkshopModal = ({ isOpen, onClose }: Props) => {
                           </p>
                         </div>
                       </div>
-
-                      {w.description && (
-                        <div className="ml-6 mt-2">
-                          <p className={`text-xs text-gray-600 leading-relaxed ${descExpanded ? "" : "line-clamp-2"}`}>
-                            {w.description}
-                          </p>
-                          {w.description.length > 120 && (
-                            <button onClick={e => { e.stopPropagation(); setExpandedDesc(descExpanded === w.id ? null : w.id); }}
-                              className="text-[10px] text-[#c8953d] font-bold mt-1 flex items-center gap-1 uppercase tracking-wider">
-                              {descExpanded ? <><ChevronUp size={11}/> Less</> : <><ChevronDown size={11}/> Read more</>}
-                            </button>
-                          )}
-                        </div>
-                      )}
                     </div>
                   );
                 })}
@@ -328,14 +448,23 @@ export const WorkshopModal = ({ isOpen, onClose }: Props) => {
               <h3 className="text-[#1b2a3b] text-2xl font-bold mb-2" style={{ fontFamily: "'Raleway', sans-serif" }}>
                 You're Registered!
               </h3>
-              <p className="text-gray-500 text-sm mb-2">
+              <p className="text-gray-500 text-sm mb-4">
                 A confirmation email has been sent to <strong>{form.email}</strong>.
               </p>
               {selectedWorkshop && (
-                <p className="text-[#c8953d] text-sm font-bold">{selectedWorkshop.title}{selectedWorkshop.date ? ` · ${selectedWorkshop.date}` : ""}</p>
+                <div className="text-left border border-gray-100 p-5 mb-6 inline-block w-full max-w-sm text-left">
+                  <p className="font-bold text-[#1b2a3b] text-sm mb-3" style={{ fontFamily: "'Raleway', sans-serif" }}>
+                    {selectedWorkshop.title}
+                  </p>
+                  {(selectedWorkshop.sessions ?? []).map((s, i) => (
+                    <p key={i} className="text-xs text-[#555] mb-1">
+                      <span className="font-semibold text-[#c8953d]">Session {i + 1}:</span> {s}
+                    </p>
+                  ))}
+                </div>
               )}
               <button onClick={handleClose}
-                className="mt-8 px-10 py-3 bg-[#1b2a3b] text-white text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#c8953d] transition-colors"
+                className="px-10 py-3 bg-[#1b2a3b] text-white text-xs font-bold tracking-[0.25em] uppercase hover:bg-[#c8953d] transition-colors"
                 style={{ fontFamily: "'Raleway', sans-serif" }}>
                 Close
               </button>
@@ -391,10 +520,7 @@ export const WorkshopModal = ({ isOpen, onClose }: Props) => {
                   <div className="space-y-4">
                     {foundSignups.map(s => (
                       <div key={s.id} className="border border-gray-200 p-5">
-                        <p className="font-bold text-[#1b2a3b] text-sm mb-1" style={{ fontFamily: "'Raleway', sans-serif" }}>{s.workshopTitle}</p>
-                        {(s.workshopDate || s.workshopTime) && (
-                          <p className="text-xs text-[#888] mb-3">{s.workshopDate}{s.workshopDate && s.workshopTime ? " · " : ""}{s.workshopTime}</p>
-                        )}
+                        <p className="font-bold text-[#1b2a3b] text-sm mb-3" style={{ fontFamily: "'Raleway', sans-serif" }}>{s.workshopTitle}</p>
                         <button onClick={() => handleCancel(s.id)} disabled={cancellingId === s.id}
                           className="px-6 py-2 border border-red-400 text-red-500 text-xs font-bold tracking-wider uppercase hover:bg-red-50 transition-colors flex items-center gap-2 disabled:opacity-60"
                           style={{ fontFamily: "'Raleway', sans-serif" }}>
